@@ -34,7 +34,7 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
       return;
     }
     setErrors({});
-    toast.success("You're on the list! We'll be in touch soon.");
+    toast.success("Demo request received! We'll be in touch soon.");
     setName("");
     setEmail("");
     onClose();
@@ -64,9 +64,9 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
 
-            <h3 className="font-display text-2xl font-bold text-foreground">Request Early Access</h3>
+            <h3 className="font-display text-2xl font-bold text-foreground">Request a Demo</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Be among the first to turn your customer data into smarter marketing decisions.
+              See how your customer data can drive smarter marketing decisions.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -92,12 +92,12 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
                 {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
               <Button type="submit" variant="hero" size="lg" className="w-full text-base">
-                Get Early Access
+                Request Demo
               </Button>
             </form>
 
             <p className="mt-4 text-[11px] text-muted-foreground text-center">
-              No spam. We'll only reach out when it's your turn.
+              No spam. We'll reach out to schedule your personalized demo.
             </p>
           </motion.div>
         </motion.div>

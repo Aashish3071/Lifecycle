@@ -20,7 +20,7 @@ const Navbar = ({ onRequestAccess }: NavbarProps) => (
         <button onClick={() => scrollTo("automations")} className="hover:text-hero-foreground transition-colors">Automations</button>
         <button onClick={() => scrollTo("integrations")} className="hover:text-hero-foreground transition-colors">Integrations</button>
       </div>
-      <Button variant="hero" size="sm" onClick={onRequestAccess}>Request Early Access</Button>
+      <Button variant="hero" size="sm" onClick={onRequestAccess}>Request a Demo</Button>
     </div>
   </nav>
 );
