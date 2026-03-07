@@ -34,7 +34,7 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
       return;
     }
     setErrors({});
-    toast.success("You're on the list! We'll be in touch soon.");
+    toast.success("Demo request received! We'll be in touch soon.");
     setName("");
     setEmail("");
     onClose();
