@@ -7,7 +7,7 @@ import WorkflowSection from "@/components/landing/WorkflowSection";
 import AutomationsSection from "@/components/landing/AutomationsSection";
 import InsightsSection from "@/components/landing/InsightsSection";
 import SimplicitySection from "@/components/landing/SimplicitySection";
-
+import FaqSection from "@/components/landing/FaqSection";
 import IntegrationsSection from "@/components/landing/IntegrationsSection";
 import CtaSection from "@/components/landing/CtaSection";
 import Footer from "@/components/landing/Footer";
@@ -27,8 +27,8 @@ const Index = () => {
       <AutomationsSection />
       <InsightsSection />
       <SimplicitySection />
-      
       <IntegrationsSection />
+      <FaqSection />
       <CtaSection onRequestAccess={openModal} />
       <Footer />
       <EarlyAccessModal open={modalOpen} onClose={() => setModalOpen(false)} />

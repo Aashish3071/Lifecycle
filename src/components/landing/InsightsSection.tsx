@@ -7,20 +7,66 @@ const cards = [
     insight: "37 customers abandoned carts today.",
     action: "Send reminder email within 1 hour.",
     reason: "High purchase intent detected.",
+    chartData: [20, 28, 18, 35, 37],
+    chartColor: "hsl(14 90% 58%)",
+    urgency: "Critical",
   },
   {
     icon: TrendingUp,
     insight: "21 customers are likely to reorder this week.",
     action: "Send reorder reminder with product suggestions.",
     reason: "Purchase cycle pattern detected.",
+    chartData: [8, 12, 15, 18, 21],
+    chartColor: "hsl(142 71% 45%)",
+    urgency: "High",
   },
   {
     icon: UserCheck,
     insight: "12 high-value customers have not purchased in 60 days.",
     action: "Trigger win-back campaign with incentive.",
     reason: "Churn risk identified.",
+    chartData: [30, 25, 20, 16, 12],
+    chartColor: "hsl(38 92% 50%)",
+    urgency: "Warning",
   },
 ];
+
+const MiniChart = ({ data, color }: { data: number[]; color: string }) => {
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const width = 120;
+  const height = 40;
+  const padding = 2;
+
+  const points = data.map((v, i) => ({
+    x: padding + (i / (data.length - 1)) * (width - padding * 2),
+    y: height - padding - ((v - min) / range) * (height - padding * 2),
+  }));
+
+  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const areaPath = `${linePath} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`;
+
+  return (
+    <svg width={width} height={height} className="overflow-visible">
+      <defs>
+        <linearGradient id={`grad-${color.replace(/[^a-z0-9]/gi, "")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#grad-${color.replace(/[^a-z0-9]/gi, "")})`} />
+      <path d={linePath} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r={3} fill={color} />
+    </svg>
+  );
+};
+
+const urgencyColors: Record<string, string> = {
+  Critical: "bg-destructive/10 text-destructive",
+  High: "bg-accent/10 text-accent",
+  Warning: "bg-[hsl(38_92%_50%)]/10 text-[hsl(38_92%_50%)]",
+};
 
 const InsightsSection = () => (
   <section className="py-24 md:py-32 bg-background">
@@ -45,11 +91,21 @@ const InsightsSection = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.12, duration: 0.5 }}
-            className="bg-card rounded-xl border border-border p-6 flex flex-col"
+            className="group bg-card rounded-xl border border-border p-6 flex flex-col hover:shadow-xl hover:-translate-y-1 hover:border-accent/30 transition-all duration-300 cursor-default"
           >
-            <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-              <c.icon className="w-4 h-4 text-accent" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                <c.icon className="w-4 h-4 text-accent" />
+              </div>
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${urgencyColors[c.urgency]}`}>
+                {c.urgency}
+              </span>
             </div>
+
+            <div className="mb-4">
+              <MiniChart data={c.chartData} color={c.chartColor} />
+            </div>
+
             <div className="space-y-3 flex-1">
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Insight</span>

@@ -20,8 +20,9 @@ const fadeUp = {
 };
 
 const ProblemSection = () => (
-  <section id="problem" className="py-24 md:py-32 bg-surface">
-    <div className="container mx-auto px-6 max-w-5xl">
+  <section id="problem" className="relative py-24 md:py-32 bg-surface section-glow">
+    <div className="absolute inset-0 dot-pattern pointer-events-none" />
+    <div className="relative container mx-auto px-6 max-w-5xl">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -58,7 +59,7 @@ const ProblemSection = () => (
           </motion.p>
         </div>
 
-        <motion.div variants={fadeUp} custom={3} className="bg-card rounded-2xl border border-border p-8 shadow-sm">
+        <motion.div variants={fadeUp} custom={3} className="bg-card rounded-2xl border border-border p-8 shadow-sm hover:shadow-lg transition-shadow duration-300">
           <div className="space-y-4">
             {tools.map((t, i) => (
               <div key={t.name} className="flex items-center gap-4">
