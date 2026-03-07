@@ -92,7 +92,7 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
                 {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
               <Button type="submit" variant="hero" size="lg" className="w-full text-base">
-                Get Early Access
+                Request Demo
               </Button>
             </form>
 
