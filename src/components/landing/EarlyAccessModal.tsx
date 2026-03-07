@@ -64,9 +64,9 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
 
-            <h3 className="font-display text-2xl font-bold text-foreground">Request Early Access</h3>
+            <h3 className="font-display text-2xl font-bold text-foreground">Request a Demo</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Be among the first to turn your customer data into smarter marketing decisions.
+              See how your customer data can drive smarter marketing decisions.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
