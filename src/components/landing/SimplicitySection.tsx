@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ListChecks, BarChart3, Workflow } from "lucide-react";
 
 const noLongerNeeded = [
-  "Manually build segments",
-  "Analyze multiple dashboards",
-  "Design complicated workflows",
+  { label: "Manually build segments", desc: "No more guessing who to target—automation handles it.", icon: ListChecks },
+  { label: "Analyze multiple dashboards", desc: "One unified view replaces scattered reports.", icon: BarChart3 },
+  { label: "Design complicated workflows", desc: "Pre-built lifecycle flows launch in minutes.", icon: Workflow },
 ];
 
 const SimplicitySection = () => (
   <section className="py-24 md:py-32 bg-hero">
-    <div className="container mx-auto px-6 max-w-3xl text-center">
+    <div className="container mx-auto px-6 max-w-4xl text-center">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -24,22 +24,27 @@ const SimplicitySection = () => (
         </p>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="mt-12 inline-flex flex-col gap-4"
-      >
-        {noLongerNeeded.map((item) => (
-          <div key={item} className="flex items-center gap-3 text-hero-muted/80">
-            <div className="w-7 h-7 rounded-full bg-hero-foreground/5 flex items-center justify-center">
-              <X className="w-3.5 h-3.5 text-hero-muted/50" />
+      <div className="mt-12 grid sm:grid-cols-3 gap-5">
+        {noLongerNeeded.map((item, i) => (
+          <motion.div
+            key={item.label}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="group relative bg-hero-foreground/[0.04] border border-hero-foreground/10 rounded-xl p-6 text-left hover:bg-hero-foreground/[0.08] hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_8px_30px_-12px_hsl(var(--accent)/0.25)] transition-all duration-300 cursor-default"
+          >
+            <div className="w-10 h-10 rounded-lg bg-hero-foreground/[0.06] flex items-center justify-center mb-4 group-hover:bg-accent/15 transition-colors">
+              <item.icon className="w-5 h-5 text-hero-muted/60 group-hover:text-accent transition-colors" />
             </div>
-            <span className="text-left">{item}</span>
-          </div>
+            <div className="flex items-center gap-2 mb-2">
+              <X className="w-3.5 h-3.5 text-destructive/70" />
+              <span className="font-display font-semibold text-hero-foreground text-sm line-through decoration-hero-muted/30">{item.label}</span>
+            </div>
+            <p className="text-xs text-hero-muted leading-relaxed">{item.desc}</p>
+          </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       <motion.p
         initial={{ opacity: 0 }}
