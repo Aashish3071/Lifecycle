@@ -38,7 +38,7 @@ const CtaSection = ({ onRequestAccess }: CtaSectionProps) => (
         className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
       >
         <Button variant="hero" size="lg" className="text-base px-8" onClick={onRequestAccess}>
-          Request Early Access <ArrowRight className="ml-1" />
+          Request a Demo <ArrowRight className="ml-1" />
         </Button>
         <Button variant="hero-outline" size="lg" className="text-base px-8" onClick={() => scrollTo("workflow")}>
           See How It Works

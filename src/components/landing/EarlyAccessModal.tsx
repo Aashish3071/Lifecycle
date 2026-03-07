@@ -97,7 +97,7 @@ const EarlyAccessModal = ({ open, onClose }: EarlyAccessModalProps) => {
             </form>
 
             <p className="mt-4 text-[11px] text-muted-foreground text-center">
-              No spam. We'll only reach out when it's your turn.
+              No spam. We'll reach out to schedule your personalized demo.
             </p>
           </motion.div>
         </motion.div>

@@ -52,7 +52,7 @@ const HeroSection = ({ onRequestAccess }: HeroSectionProps) => (
           See How It Works <ArrowRight className="ml-1" />
         </Button>
         <Button variant="hero-outline" size="lg" className="text-base px-8" onClick={onRequestAccess}>
-          Request Early Access
+          Request a Demo
         </Button>
       </motion.div>
     </div>

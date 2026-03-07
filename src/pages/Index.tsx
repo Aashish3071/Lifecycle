@@ -27,7 +27,7 @@ const Index = () => {
       <AutomationsSection />
       <InsightsSection />
       <SimplicitySection />
-      <SocialProofSection />
+      
       <IntegrationsSection />
       <CtaSection onRequestAccess={openModal} />
       <Footer />
