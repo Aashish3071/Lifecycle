@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ShoppingCart, BarChart3, Mail } from "lucide-react";
+import { BarChart3, Mail } from "lucide-react";
+import shopifyLogo from "../../assets/shopify-logo.png";
 
 const integrations = [
-  { icon: ShoppingCart, name: "Shopify" },
+  { icon: "image", image: shopifyLogo, name: "Shopify" },
   { icon: BarChart3, name: "Google Analytics (GA4)" },
   { icon: Mail, name: "Email Providers" },
 ];
@@ -30,8 +31,12 @@ const IntegrationsSection = () => (
       >
         {integrations.map((int) => (
           <div key={int.name} className="flex flex-col items-center gap-3 group">
-            <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center group-hover:shadow-lg group-hover:border-accent/30 transition-all duration-300">
-              <int.icon className="w-8 h-8 text-muted-foreground group-hover:text-accent transition-colors" />
+            <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center group-hover:shadow-lg group-hover:border-accent/30 group-hover:-translate-y-1 transition-all duration-300">
+              {int.icon === "image" ? (
+                <img src={int.image} alt={int.name} className="w-10 h-10 object-contain" />
+              ) : (
+                <int.icon className="w-8 h-8 text-muted-foreground group-hover:text-accent transition-colors" />
+              )}
             </div>
             <span className="text-sm font-medium text-foreground">{int.name}</span>
           </div>
