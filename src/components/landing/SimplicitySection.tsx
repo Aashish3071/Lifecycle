@@ -2,9 +2,33 @@ import { motion } from "framer-motion";
 import { X, ListChecks, BarChart3, Workflow } from "lucide-react";
 
 const noLongerNeeded = [
-  { label: "Manually build segments", desc: "No more guessing who to target—automation handles it.", icon: ListChecks },
-  { label: "Analyze multiple dashboards", desc: "One unified view replaces scattered reports.", icon: BarChart3 },
-  { label: "Design complicated workflows", desc: "Pre-built lifecycle flows launch in minutes.", icon: Workflow },
+  {
+    label: "Manually build segments",
+    desc: "No more guessing who to target—automation handles it.",
+    icon: ListChecks,
+    gradient: "from-rose-500/20 to-orange-500/20",
+    iconColor: "text-rose-400",
+    borderAccent: "hover:border-rose-400/30",
+    shadowAccent: "hover:shadow-[0_8px_30px_-12px_rgba(244,63,94,0.3)]",
+  },
+  {
+    label: "Analyze multiple dashboards",
+    desc: "One unified view replaces scattered reports.",
+    icon: BarChart3,
+    gradient: "from-blue-500/20 to-cyan-500/20",
+    iconColor: "text-blue-400",
+    borderAccent: "hover:border-blue-400/30",
+    shadowAccent: "hover:shadow-[0_8px_30px_-12px_rgba(59,130,246,0.3)]",
+  },
+  {
+    label: "Design complicated workflows",
+    desc: "Pre-built lifecycle flows launch in minutes.",
+    icon: Workflow,
+    gradient: "from-violet-500/20 to-fuchsia-500/20",
+    iconColor: "text-violet-400",
+    borderAccent: "hover:border-violet-400/30",
+    shadowAccent: "hover:shadow-[0_8px_30px_-12px_rgba(139,92,246,0.3)]",
+  },
 ];
 
 const SimplicitySection = () => (
@@ -24,7 +48,7 @@ const SimplicitySection = () => (
         </p>
       </motion.div>
 
-      <div className="mt-12 grid sm:grid-cols-3 gap-5">
+      <div className="mt-12 grid sm:grid-cols-3 gap-6">
         {noLongerNeeded.map((item, i) => (
           <motion.div
             key={item.label}
@@ -32,16 +56,23 @@ const SimplicitySection = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.5 }}
-            className="group relative bg-hero-foreground/[0.04] border border-hero-foreground/10 rounded-xl p-6 text-left hover:bg-hero-foreground/[0.08] hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_8px_30px_-12px_hsl(var(--accent)/0.25)] transition-all duration-300 cursor-default"
+            className={`group relative overflow-hidden bg-hero-foreground/[0.03] border border-hero-foreground/10 rounded-2xl p-6 text-left hover:-translate-y-1 ${item.borderAccent} ${item.shadowAccent} transition-all duration-300 cursor-default`}
           >
-            <div className="w-10 h-10 rounded-lg bg-hero-foreground/[0.06] flex items-center justify-center mb-4 group-hover:bg-accent/15 transition-colors">
-              <item.icon className="w-5 h-5 text-hero-muted/60 group-hover:text-accent transition-colors" />
+            {/* Subtle gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+
+            <div className="relative z-10">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-5 border border-hero-foreground/5`}>
+                <item.icon className={`w-5.5 h-5.5 ${item.iconColor}`} />
+              </div>
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-5 h-5 rounded-full bg-destructive/15 flex items-center justify-center flex-shrink-0">
+                  <X className="w-3 h-3 text-destructive" />
+                </div>
+                <span className="font-display font-semibold text-hero-foreground text-sm line-through decoration-hero-muted/40 decoration-2">{item.label}</span>
+              </div>
+              <p className="text-xs text-hero-muted leading-relaxed pl-[30px]">{item.desc}</p>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <X className="w-3.5 h-3.5 text-destructive/70" />
-              <span className="font-display font-semibold text-hero-foreground text-sm line-through decoration-hero-muted/30">{item.label}</span>
-            </div>
-            <p className="text-xs text-hero-muted leading-relaxed">{item.desc}</p>
           </motion.div>
         ))}
       </div>
