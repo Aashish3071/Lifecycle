@@ -1,17 +1,17 @@
 import {
   LayoutDashboard,
-  Mail,
+  Zap,
   Users,
-  ShoppingCart,
-  BarChart3,
-  Megaphone,
+  UserX,
   Workflow,
   Settings,
   ListChecks,
-  Sparkles,
+  Mail,
+  MessageCircle,
+  Target,
+  BarChart3,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
@@ -28,26 +28,54 @@ import {
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 
-const mainItems = [
+const coreItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Campaigns", url: "/dashboard/campaigns", icon: Megaphone },
-  { title: "Flows", url: "/dashboard/flows", icon: Workflow },
-  { title: "Email Templates", url: "/dashboard/templates", icon: Mail },
+  { title: "Recommendations", url: "/dashboard/recommendations", icon: Zap },
+  { title: "Audiences", url: "/dashboard/audiences", icon: Users },
+  { title: "Automations", url: "/dashboard/automations", icon: Workflow },
 ];
 
-const dataItems = [
-  { title: "Customers", url: "/dashboard/customers", icon: Users },
-  { title: "Orders", url: "/dashboard/orders", icon: ShoppingCart },
-  { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
-  { title: "Segments", url: "/dashboard/segments", icon: Sparkles },
+const channelItems = [
+  { title: "Email", url: "/dashboard/email", icon: Mail },
+  { title: "WhatsApp", url: "/dashboard/whatsapp", icon: MessageCircle },
+  { title: "Campaigns", url: "/dashboard/campaigns", icon: Target },
+];
+
+const insightItems = [
+  { title: "Churn Risk", url: "/dashboard/churn", icon: UserX },
+  { title: "Engagement", url: "/dashboard/engagement", icon: BarChart3 },
 ];
 
 const AppSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { onboardingComplete, onboardingDismissed } = useAuth();
-  const location = useLocation();
   const showOnboardingBadge = !onboardingComplete && onboardingDismissed;
+
+  const renderGroup = (label: string, items: typeof coreItems) => (
+    <SidebarGroup>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <NavLink
+                  to={item.url}
+                  end={item.url === "/dashboard"}
+                  className="hover:bg-sidebar-accent/50"
+                  activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {!collapsed && <span>{item.title}</span>}
+                </NavLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
 
   return (
     <Sidebar collapsible="icon">
@@ -60,7 +88,6 @@ const AppSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Onboarding nudge */}
         {showOnboardingBadge && (
           <div className="px-3 mb-2">
             <NavLink
@@ -71,59 +98,16 @@ const AppSidebar = () => {
               {!collapsed && (
                 <>
                   <span className="font-medium">Complete setup</span>
-                  <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0">
-                    !
-                  </Badge>
+                  <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0">!</Badge>
                 </>
               )}
             </NavLink>
           </div>
         )}
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/dashboard"}
-                      className="hover:bg-sidebar-accent/50"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Data</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {dataItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className="hover:bg-sidebar-accent/50"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {renderGroup("Core", coreItems)}
+        {renderGroup("Channels", channelItems)}
+        {renderGroup("Insights", insightItems)}
       </SidebarContent>
 
       <SidebarFooter className="px-3 pb-4">
