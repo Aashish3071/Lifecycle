@@ -31,13 +31,14 @@ const App = () => (
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
+              <Route path="recommendations" element={<DashboardPlaceholder />} />
+              <Route path="audiences" element={<DashboardPlaceholder />} />
+              <Route path="automations" element={<DashboardPlaceholder />} />
+              <Route path="email" element={<DashboardPlaceholder />} />
+              <Route path="whatsapp" element={<DashboardPlaceholder />} />
               <Route path="campaigns" element={<DashboardPlaceholder />} />
-              <Route path="flows" element={<DashboardPlaceholder />} />
-              <Route path="templates" element={<DashboardPlaceholder />} />
-              <Route path="customers" element={<DashboardPlaceholder />} />
-              <Route path="orders" element={<DashboardPlaceholder />} />
-              <Route path="analytics" element={<DashboardPlaceholder />} />
-              <Route path="segments" element={<DashboardPlaceholder />} />
+              <Route path="churn" element={<DashboardPlaceholder />} />
+              <Route path="engagement" element={<DashboardPlaceholder />} />
               <Route path="settings" element={<DashboardPlaceholder />} />
             </Route>
             <Route path="*" element={<NotFound />} />
