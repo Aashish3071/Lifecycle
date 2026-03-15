@@ -50,7 +50,7 @@ const App = () => (
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="churn" element={<ChurnRisk />} />
               <Route path="engagement" element={<Engagement />} />
-              <Route path="settings" element={<DashboardPlaceholder />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
