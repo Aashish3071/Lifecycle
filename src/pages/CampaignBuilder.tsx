@@ -77,7 +77,7 @@ const CampaignBuilder = () => {
           <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
             <Zap className="w-4 h-4 text-accent" /> Recommended for You
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {recommendedFlows.map((flow) => (
               <Card
                 key={flow.name}

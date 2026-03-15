@@ -33,7 +33,7 @@ const automations = [
   },
   {
     id: 2,
-    name: "Win-Back Dormant Users",
+    name: "Dormant Customer Win-Back",
     trigger: "No activity for 30 days",
     channels: ["Email"],
     status: "active" as const,
