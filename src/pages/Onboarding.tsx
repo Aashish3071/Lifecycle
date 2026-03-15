@@ -9,6 +9,7 @@ import {
   Link2,
   FormInput,
   Mail,
+  MessageCircle,
   BarChart3,
   ShoppingCart,
   Users,
