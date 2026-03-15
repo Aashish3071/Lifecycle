@@ -37,9 +37,11 @@ const actions = [
 ];
 
 const recommendedFlows = [
-  { trigger: "abandoned-cart", action: "email", name: "Holiday Recovery", reason: "856 users abandoned carts this week" },
-  { trigger: "dormant-user", action: "whatsapp", name: "Win-Back Campaign", reason: "1,240 dormant users identified" },
-  { trigger: "consumption-end", action: "whatsapp", name: "Replenishment Nudge", reason: "320 users due for reorder" },
+  { trigger: "abandoned-cart", action: "email", name: "Abandoned Cart Recovery", reason: "856 users abandoned carts this week" },
+  { trigger: "product-viewed", action: "email", name: "Browse Abandonment", reason: "1,420 users browsed but didn't buy" },
+  { trigger: "consumption-end", action: "whatsapp", name: "Reorder Reminder", reason: "320 users due for reorder" },
+  { trigger: "abandoned-cart", action: "email", name: "Post-Purchase Cross Sell", reason: "490 recent buyers to cross-sell" },
+  { trigger: "dormant-user", action: "whatsapp", name: "Dormant Customer Win-Back", reason: "1,240 dormant users identified" },
 ];
 
 const CampaignBuilder = () => {
