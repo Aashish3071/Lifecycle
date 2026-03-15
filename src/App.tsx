@@ -38,7 +38,8 @@ const App = () => (
               <Route index element={<Dashboard />} />
               <Route path="recommendations" element={<Recommendations />} />
               <Route path="audiences" element={<Audiences />} />
-              <Route path="automations" element={<DashboardPlaceholder />} />
+              <Route path="automations" element={<Automations />} />
+              <Route path="automations/create" element={<CampaignBuilder />} />
               <Route path="email" element={<DashboardPlaceholder />} />
               <Route path="whatsapp" element={<DashboardPlaceholder />} />
               <Route path="campaigns" element={<DashboardPlaceholder />} />
