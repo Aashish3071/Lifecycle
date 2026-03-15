@@ -14,6 +14,10 @@ import Audiences from "./pages/Audiences";
 import ChurnRisk from "./pages/ChurnRisk";
 import Automations from "./pages/Automations";
 import CampaignBuilder from "./pages/CampaignBuilder";
+import Email from "./pages/Email";
+import WhatsApp from "./pages/WhatsApp";
+import Campaigns from "./pages/Campaigns";
+import Engagement from "./pages/Engagement";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
@@ -40,11 +44,11 @@ const App = () => (
               <Route path="audiences" element={<Audiences />} />
               <Route path="automations" element={<Automations />} />
               <Route path="automations/create" element={<CampaignBuilder />} />
-              <Route path="email" element={<DashboardPlaceholder />} />
-              <Route path="whatsapp" element={<DashboardPlaceholder />} />
-              <Route path="campaigns" element={<DashboardPlaceholder />} />
+              <Route path="email" element={<Email />} />
+              <Route path="whatsapp" element={<WhatsApp />} />
+              <Route path="campaigns" element={<Campaigns />} />
               <Route path="churn" element={<ChurnRisk />} />
-              <Route path="engagement" element={<DashboardPlaceholder />} />
+              <Route path="engagement" element={<Engagement />} />
               <Route path="settings" element={<DashboardPlaceholder />} />
             </Route>
             <Route path="*" element={<NotFound />} />
