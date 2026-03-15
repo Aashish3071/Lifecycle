@@ -94,18 +94,18 @@ const severityBadge = {
 };
 
 const Dashboard = () => (
-  <div className="max-w-6xl mx-auto space-y-8">
+  <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
     {/* Header */}
-    <div className="flex items-start justify-between">
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">
+        <h1 className="text-xl sm:text-2xl font-display font-bold text-foreground">
           What Needs Your Attention
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           We analyzed your data — here's what to act on today.
         </p>
       </div>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full w-fit">
         <Clock className="w-3 h-3" />
         Last analyzed 2h ago
       </div>
