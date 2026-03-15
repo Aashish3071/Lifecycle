@@ -44,9 +44,9 @@ const App = () => (
               <Route path="audiences" element={<Audiences />} />
               <Route path="automations" element={<Automations />} />
               <Route path="automations/create" element={<CampaignBuilder />} />
-              <Route path="email" element={<DashboardPlaceholder />} />
-              <Route path="whatsapp" element={<DashboardPlaceholder />} />
-              <Route path="campaigns" element={<DashboardPlaceholder />} />
+              <Route path="email" element={<Email />} />
+              <Route path="whatsapp" element={<WhatsApp />} />
+              <Route path="campaigns" element={<Campaigns />} />
               <Route path="churn" element={<ChurnRisk />} />
               <Route path="engagement" element={<DashboardPlaceholder />} />
               <Route path="settings" element={<DashboardPlaceholder />} />
