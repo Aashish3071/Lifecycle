@@ -142,12 +142,22 @@ const Dashboard = () => (
             key={item.id}
             className={`border-l-4 ${severityStyles[item.severity]} p-0 overflow-hidden`}
           >
-            <div className="flex items-center gap-5 px-5 py-4">
-              <div className="shrink-0 w-10 h-10 rounded-lg bg-card flex items-center justify-center border border-border">
-                <item.icon className="w-5 h-5 text-foreground" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 px-4 py-4 sm:px-5">
+              <div className="flex items-center gap-3">
+                <div className="shrink-0 w-10 h-10 rounded-lg bg-card flex items-center justify-center border border-border">
+                  <item.icon className="w-5 h-5 text-foreground" />
+                </div>
+                <div className="flex-1 min-w-0 sm:hidden">
+                  <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <Badge variant={severityBadge[item.severity]} className="text-[10px] px-1.5 py-0 capitalize">
+                      {item.severity}
+                    </Badge>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 hidden sm:block">
                 <div className="flex items-center gap-2 mb-0.5">
                   <p className="text-sm font-semibold text-foreground">{item.title}</p>
                   <Badge variant={severityBadge[item.severity]} className="text-[10px] px-1.5 py-0 capitalize">
@@ -160,15 +170,19 @@ const Dashboard = () => (
                 <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
               </div>
 
-              <div className="shrink-0 text-right mr-4 hidden sm:block">
-                <p className="text-lg font-display font-bold text-foreground">{item.metric}</p>
-                <p className="text-[10px] text-muted-foreground">{item.metricLabel}</p>
-              </div>
+              <p className="text-xs text-muted-foreground line-clamp-2 sm:hidden">{item.description}</p>
 
-              <Button size="sm" variant="default" className="shrink-0 gap-1.5">
-                {item.action}
-                <ArrowRight className="w-3 h-3" />
-              </Button>
+              <div className="flex items-center justify-between sm:justify-end gap-4">
+                <div className="text-left sm:text-right">
+                  <p className="text-lg font-display font-bold text-foreground">{item.metric}</p>
+                  <p className="text-[10px] text-muted-foreground">{item.metricLabel}</p>
+                </div>
+                <Button size="sm" variant="default" className="shrink-0 gap-1.5 text-xs sm:text-sm">
+                  <span className="hidden sm:inline">{item.action}</span>
+                  <span className="sm:hidden">Act</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Button>
+              </div>
             </div>
           </Card>
         ))}
