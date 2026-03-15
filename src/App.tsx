@@ -9,6 +9,9 @@ import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import DashboardPlaceholder from "./pages/DashboardPlaceholder";
+import Recommendations from "./pages/Recommendations";
+import Audiences from "./pages/Audiences";
+import ChurnRisk from "./pages/ChurnRisk";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
@@ -31,13 +34,13 @@ const App = () => (
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
-              <Route path="recommendations" element={<DashboardPlaceholder />} />
-              <Route path="audiences" element={<DashboardPlaceholder />} />
+              <Route path="recommendations" element={<Recommendations />} />
+              <Route path="audiences" element={<Audiences />} />
               <Route path="automations" element={<DashboardPlaceholder />} />
               <Route path="email" element={<DashboardPlaceholder />} />
               <Route path="whatsapp" element={<DashboardPlaceholder />} />
               <Route path="campaigns" element={<DashboardPlaceholder />} />
-              <Route path="churn" element={<DashboardPlaceholder />} />
+              <Route path="churn" element={<ChurnRisk />} />
               <Route path="engagement" element={<DashboardPlaceholder />} />
               <Route path="settings" element={<DashboardPlaceholder />} />
             </Route>
