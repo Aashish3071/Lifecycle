@@ -59,7 +59,7 @@ const automations = [
   },
   {
     id: 4,
-    name: "Post-Purchase Follow Up",
+    name: "Post-Purchase Cross Sell",
     trigger: "Order delivered + 3 days",
     channels: ["Email"],
     status: "paused" as const,
