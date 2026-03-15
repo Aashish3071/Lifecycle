@@ -12,6 +12,8 @@ import DashboardPlaceholder from "./pages/DashboardPlaceholder";
 import Recommendations from "./pages/Recommendations";
 import Audiences from "./pages/Audiences";
 import ChurnRisk from "./pages/ChurnRisk";
+import Automations from "./pages/Automations";
+import CampaignBuilder from "./pages/CampaignBuilder";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
