@@ -33,7 +33,7 @@ const automations = [
   },
   {
     id: 2,
-    name: "Win-Back Dormant Users",
+    name: "Dormant Customer Win-Back",
     trigger: "No activity for 30 days",
     channels: ["Email"],
     status: "active" as const,
@@ -59,7 +59,7 @@ const automations = [
   },
   {
     id: 4,
-    name: "Post-Purchase Follow Up",
+    name: "Post-Purchase Cross Sell",
     trigger: "Order delivered + 3 days",
     channels: ["Email"],
     status: "paused" as const,
@@ -72,7 +72,7 @@ const automations = [
   },
   {
     id: 5,
-    name: "Replenishment Reminder",
+    name: "Reorder Reminder",
     trigger: "Based on avg. consumption cycle",
     channels: ["WhatsApp"],
     status: "draft" as const,
