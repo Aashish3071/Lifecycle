@@ -34,8 +34,8 @@ const App = () => (
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
-              <Route path="recommendations" element={<DashboardPlaceholder />} />
-              <Route path="audiences" element={<DashboardPlaceholder />} />
+              <Route path="recommendations" element={<Recommendations />} />
+              <Route path="audiences" element={<Audiences />} />
               <Route path="automations" element={<DashboardPlaceholder />} />
               <Route path="email" element={<DashboardPlaceholder />} />
               <Route path="whatsapp" element={<DashboardPlaceholder />} />
