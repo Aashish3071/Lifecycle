@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ShoppingCart, BarChart3, Mail, ArrowRight } from "lucide-react";
+import { ShoppingCart, BarChart3, Mail, MessageCircle, ArrowRight } from "lucide-react";
 
 const signals = [
   "Products customers view",
@@ -12,6 +12,7 @@ const tools = [
   { icon: ShoppingCart, name: "Shopify", desc: "Tracks purchases" },
   { icon: BarChart3, name: "GA4", desc: "Tracks behavior" },
   { icon: Mail, name: "Email tools", desc: "Tracks engagement" },
+  { icon: MessageCircle, name: "WhatsApp", desc: "Tracks messaging" },
 ];
 
 const fadeUp = {
