@@ -18,6 +18,7 @@ import Email from "./pages/Email";
 import WhatsApp from "./pages/WhatsApp";
 import Campaigns from "./pages/Campaigns";
 import Engagement from "./pages/Engagement";
+import Settings from "./pages/Settings";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
@@ -49,7 +50,7 @@ const App = () => (
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="churn" element={<ChurnRisk />} />
               <Route path="engagement" element={<Engagement />} />
-              <Route path="settings" element={<DashboardPlaceholder />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
