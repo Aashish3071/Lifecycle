@@ -9,6 +9,9 @@ import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import DashboardPlaceholder from "./pages/DashboardPlaceholder";
+import Recommendations from "./pages/Recommendations";
+import Audiences from "./pages/Audiences";
+import ChurnRisk from "./pages/ChurnRisk";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
