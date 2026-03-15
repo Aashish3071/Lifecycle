@@ -12,6 +12,8 @@ import DashboardPlaceholder from "./pages/DashboardPlaceholder";
 import Recommendations from "./pages/Recommendations";
 import Audiences from "./pages/Audiences";
 import ChurnRisk from "./pages/ChurnRisk";
+import Automations from "./pages/Automations";
+import CampaignBuilder from "./pages/CampaignBuilder";
 import AppLayout from "./components/app/AppLayout";
 
 const queryClient = new QueryClient();
@@ -36,7 +38,8 @@ const App = () => (
               <Route index element={<Dashboard />} />
               <Route path="recommendations" element={<Recommendations />} />
               <Route path="audiences" element={<Audiences />} />
-              <Route path="automations" element={<DashboardPlaceholder />} />
+              <Route path="automations" element={<Automations />} />
+              <Route path="automations/create" element={<CampaignBuilder />} />
               <Route path="email" element={<DashboardPlaceholder />} />
               <Route path="whatsapp" element={<DashboardPlaceholder />} />
               <Route path="campaigns" element={<DashboardPlaceholder />} />
