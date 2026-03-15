@@ -72,7 +72,7 @@ const automations = [
   },
   {
     id: 5,
-    name: "Replenishment Reminder",
+    name: "Reorder Reminder",
     trigger: "Based on avg. consumption cycle",
     channels: ["WhatsApp"],
     status: "draft" as const,
