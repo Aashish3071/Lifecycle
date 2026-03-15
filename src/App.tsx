@@ -48,7 +48,7 @@ const App = () => (
               <Route path="whatsapp" element={<WhatsApp />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="churn" element={<ChurnRisk />} />
-              <Route path="engagement" element={<DashboardPlaceholder />} />
+              <Route path="engagement" element={<Engagement />} />
               <Route path="settings" element={<DashboardPlaceholder />} />
             </Route>
             <Route path="*" element={<NotFound />} />
