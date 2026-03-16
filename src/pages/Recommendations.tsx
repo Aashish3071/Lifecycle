@@ -23,7 +23,7 @@ import {
   Filter,
   CheckCircle2,
   Clock,
-  DollarSign,
+  Target,
   Users,
   Send,
 } from "lucide-react";
