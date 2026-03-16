@@ -26,8 +26,8 @@ const priorityActions = [
     icon: ShoppingCart,
     title: "324 abandoned checkouts",
     description: "Customers left items in cart in the last 7 days. Send a recovery email sequence to recapture revenue.",
-    metric: "$18,420",
-    metricLabel: "potential revenue",
+    metric: "324",
+    metricLabel: "customers to reach",
     action: "Send Recovery Emails",
     channel: "Email",
   },
@@ -75,11 +75,11 @@ const engagementChannels = [
 
 /* ── Automated flows status ────────────────────────────────── */
 const activeFlows = [
-  { name: "Abandoned Cart Recovery", status: "active" as const, recovered: 89, sent: 324, revenue: "$4,210" },
-  { name: "Post-Purchase Cross Sell", status: "active" as const, recovered: 42, sent: 156, revenue: "$2,890" },
-  { name: "Dormant Customer Win-Back", status: "active" as const, recovered: 18, sent: 210, revenue: "$1,080" },
-  { name: "Browse Abandonment", status: "active" as const, recovered: 63, sent: 892, revenue: "$1,740" },
-  { name: "Reorder Reminder", status: "paused" as const, recovered: 0, sent: 0, revenue: "$0" },
+  { name: "Abandoned Cart Recovery", status: "active" as const, recovered: 89, sent: 324, convRate: "27%" },
+  { name: "Post-Purchase Cross Sell", status: "active" as const, recovered: 42, sent: 156, convRate: "27%" },
+  { name: "Dormant Customer Win-Back", status: "active" as const, recovered: 18, sent: 210, convRate: "9%" },
+  { name: "Browse Abandonment", status: "active" as const, recovered: 63, sent: 892, convRate: "7%" },
+  { name: "Reorder Reminder", status: "paused" as const, recovered: 0, sent: 0, convRate: "0%" },
 ];
 
 const severityStyles = {
@@ -117,7 +117,7 @@ const Dashboard = () => (
       {[
         { label: "Active Customers", value: "8,432", sub: "Last 30 days", icon: Users, color: "text-accent" },
         { label: "At-Risk Customers", value: "1,247", sub: "60+ days inactive", icon: AlertTriangle, color: "text-destructive" },
-        { label: "Recovered Revenue", value: "$8,840", sub: "This month via flows", icon: Zap, color: "text-accent" },
+        { label: "Recovered Customers", value: "212", sub: "Re-engaged this month", icon: Zap, color: "text-accent" },
         { label: "Engagement Score", value: "64/100", sub: "Across all channels", icon: Target, color: "text-primary" },
       ].map((s) => (
         <Card key={s.label} className="p-5">
@@ -237,7 +237,7 @@ const Dashboard = () => (
                 <th className="text-center px-5 py-3 font-medium">Status</th>
                 <th className="text-right px-5 py-3 font-medium">Sent</th>
                 <th className="text-right px-5 py-3 font-medium">Converted</th>
-                <th className="text-right px-5 py-3 font-medium">Revenue</th>
+                <th className="text-right px-5 py-3 font-medium">Conv. Rate</th>
               </tr>
             </thead>
             <tbody>
@@ -260,7 +260,7 @@ const Dashboard = () => (
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right text-foreground font-medium">{f.recovered}</td>
-                  <td className="px-5 py-3 text-right text-accent font-semibold">{f.revenue}</td>
+                  <td className="px-5 py-3 text-right text-accent font-semibold">{f.convRate}</td>
                 </tr>
               ))}
             </tbody>

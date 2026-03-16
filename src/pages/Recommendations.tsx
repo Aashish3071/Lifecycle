@@ -23,7 +23,7 @@ import {
   Filter,
   CheckCircle2,
   Clock,
-  DollarSign,
+  Target,
   Users,
   Send,
 } from "lucide-react";
@@ -35,9 +35,9 @@ const recommendations = [
     icon: ShoppingCart,
     title: "324 abandoned checkouts need recovery emails",
     description:
-      "Customers left items worth $18,420 in their carts over the past 7 days. A 3-step email recovery sequence typically recaptures 8-12% of this revenue.",
-    metric: "$18,420",
-    metricLabel: "potential revenue",
+      "324 customers left items in their carts over the past 7 days. A 3-step email recovery sequence typically re-engages 8-12% of these customers.",
+    metric: "324",
+    metricLabel: "customers to reach",
     action: "Launch Recovery Sequence",
     channel: "email" as const,
     impact: "high" as const,
@@ -95,9 +95,9 @@ const recommendations = [
     icon: RefreshCw,
     title: "456 customers due for repeat purchase reminders",
     description:
-      "Based on average reorder cycles, these customers are likely to need a refill or repurchase. A gentle reminder increases reorder rates by 18%.",
-    metric: "$12,300",
-    metricLabel: "expected reorder value",
+      "Based on average reorder cycles, these customers are likely ready to repurchase. A timely reminder increases reorder rates by 18%.",
+    metric: "456",
+    metricLabel: "customers due",
     action: "Send Reorder Reminders",
     channel: "email" as const,
     impact: "medium" as const,
@@ -291,7 +291,7 @@ const Recommendations = () => {
                   {/* Meta row */}
                   <div className="flex flex-wrap items-center gap-4 mt-3">
                     <div className="flex items-center gap-1.5 text-xs">
-                      <DollarSign className="w-3 h-3 text-accent" />
+                      <Target className="w-3 h-3 text-accent" />
                       <span className="font-bold text-foreground">{item.metric}</span>
                       <span className="text-muted-foreground">{item.metricLabel}</span>
                     </div>

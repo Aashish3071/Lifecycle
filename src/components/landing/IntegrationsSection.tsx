@@ -7,6 +7,8 @@ const integrations = [
   { icon: BarChart3, name: "Google Analytics (GA4)" },
   { icon: Mail, name: "Email Providers" },
   { icon: MessageCircle, name: "WhatsApp" },
+  { icon: BarChart3, name: "WooCommerce" },
+  { icon: BarChart3, name: "Custom Platforms" },
 ];
 
 const IntegrationsSection = () => (
@@ -51,7 +53,7 @@ const IntegrationsSection = () => (
         transition={{ delay: 0.4 }}
         className="mt-12 text-muted-foreground max-w-md mx-auto"
       >
-        Connect your store and marketing tools in minutes. Your customer data starts working immediately.
+        Import customer data and events from your website, analytics, email, and messaging tools. Your unified view starts working immediately.
       </motion.p>
     </div>
   </section>

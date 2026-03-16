@@ -7,7 +7,7 @@ import {
   Circle,
   ChevronDown,
   Link2,
-  FormInput,
+  
   Mail,
   MessageCircle,
   BarChart3,
@@ -31,7 +31,7 @@ const categories = [
     id: "setup",
     label: "Set up your account",
     steps: [
-      { id: "connect", title: "Connect your e-commerce platform", time: "About 5 minutes", description: "Connect your Shopify, WooCommerce, or custom platform to sync products, orders, and customer data automatically.", action: "Connect", icon: Link2 },
+      { id: "connect", title: "Connect your data sources", time: "About 5 minutes", description: "Connect your website, Shopify, WooCommerce, or custom platform to sync customer data, events, and behavior automatically.", action: "Connect", icon: Link2 },
       { id: "tracking", title: "Turn on website tracking", time: "About 3 minutes", description: "Install our lightweight tracking snippet to capture visitor behavior and build customer profiles.", action: "Enable tracking", icon: BarChart3 },
       { id: "branding", title: "Add your branding", time: "About 2 minutes", description: "Upload your logo, set brand colors, and configure email sender details.", action: "Customize", icon: Palette },
     ],
@@ -40,7 +40,6 @@ const categories = [
     id: "audience",
     label: "Grow your audience",
     steps: [
-      { id: "form", title: "Create a sign-up form", time: "About 10 minutes", description: "Build an embedded or pop-up form to capture emails and grow your subscriber list.", action: "Create form", icon: FormInput },
       { id: "import", title: "Import existing contacts", time: "About 5 minutes", description: "Upload a CSV or connect your CRM to bring in your existing customer list.", action: "Import", icon: Users },
       { id: "whatsapp", title: "Connect WhatsApp Business", time: "About 5 minutes", description: "Link your WhatsApp Business account to send personalized messages and reach customers on their preferred channel.", action: "Connect WhatsApp", icon: MessageCircle },
     ],
@@ -62,8 +61,8 @@ const categories = [
 ];
 
 const quickCards = [
-  { title: "Connect your platform", time: "About 5 minutes", description: "Connect your e-commerce platform to access your data and enable syncing products and orders.", action: "Connect platform", icon: Link2 },
-  { title: "Create a sign-up form", time: "About 10 minutes", description: "Create a form on your website to grow your audience and start building customer relationships.", action: "Create form", icon: FormInput },
+  { title: "Connect your platform", time: "About 5 minutes", description: "Connect your Shopify, WooCommerce, or custom platform to sync customer data and events.", action: "Connect platform", icon: Link2 },
+  { title: "Import your contacts", time: "About 5 minutes", description: "Upload a CSV or connect your CRM to bring in your existing customer list.", action: "Import contacts", icon: Users },
   { title: "Create a welcome flow", time: "About 15 minutes", description: "Create a flow that automatically sends a welcome message to new subscribers of your brand.", action: "Create flow", icon: Mail },
 ];
 

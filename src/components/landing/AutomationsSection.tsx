@@ -22,10 +22,10 @@ const AutomationsSection = () => (
         <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground">
           The Automations That Drive
           <br />
-          <span className="text-gradient">Ecommerce Revenue</span>
+          <span className="text-gradient">Customer Engagement</span>
         </h2>
         <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-          A small set of lifecycle flows generate the majority of marketing revenue.
+          A small set of lifecycle flows drive the majority of customer retention and engagement.
         </p>
       </motion.div>
 
@@ -55,7 +55,7 @@ const AutomationsSection = () => (
         transition={{ delay: 0.4 }}
         className="mt-12 text-center text-sm text-muted-foreground"
       >
-        These lifecycle automations often generate the majority of ecommerce email revenue.
+        These lifecycle automations drive the highest engagement and retention rates across channels.
       </motion.p>
     </div>
   </section>
