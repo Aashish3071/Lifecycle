@@ -30,8 +30,8 @@ const campaigns = [
     replied: 445,
     readRate: 80.0,
     replyRate: 16.0,
-    revenue: "$8,900",
-    message: "Hey! You left items in your cart. Use code SAVE10 for 10% off 🛒",
+    revenue: undefined,
+    message: "Hey! You left items in your cart. Complete your order before they sell out 🛒",
   },
   {
     id: 2,
