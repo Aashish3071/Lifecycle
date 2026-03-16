@@ -40,7 +40,7 @@ const automations = [
     sent: 1920,
     converted: 288,
     conversionRate: 15.0,
-    revenue: "$11,520",
+    engagementRate: "15%",
     icon: UserX,
     lastTriggered: "18 min ago",
   },
