@@ -25,7 +25,7 @@ const priorityActions = [
     severity: "high" as const,
     icon: ShoppingCart,
     title: "324 abandoned checkouts",
-    description: "Customers left items in cart in the last 7 days. Send a recovery email sequence to recapture revenue.",
+    description: "Customers left items in cart in the last 7 days. Consider sending a follow-up email to re-engage them.",
     metric: "324",
     metricLabel: "customers to reach",
     action: "Send Recovery Emails",
