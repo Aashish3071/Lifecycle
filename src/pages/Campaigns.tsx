@@ -61,7 +61,6 @@ const campaigns = [
     spent: "$0",
     reach: 0,
     conversions: 0,
-    conversions: 0,
     convRate: 0,
     abTest: null,
   },
