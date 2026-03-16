@@ -27,7 +27,7 @@ const automations = [
     sent: 4280,
     converted: 856,
     conversionRate: 20.0,
-    revenue: "$34,240",
+    engagementRate: "20%",
     icon: ShoppingCart,
     lastTriggered: "2 min ago",
   },
