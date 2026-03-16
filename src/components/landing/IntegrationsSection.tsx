@@ -7,6 +7,8 @@ const integrations = [
   { icon: BarChart3, name: "Google Analytics (GA4)" },
   { icon: Mail, name: "Email Providers" },
   { icon: MessageCircle, name: "WhatsApp" },
+  { icon: BarChart3, name: "WooCommerce" },
+  { icon: BarChart3, name: "Custom Platforms" },
 ];
 
 const IntegrationsSection = () => (
