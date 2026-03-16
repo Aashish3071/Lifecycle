@@ -153,10 +153,10 @@ const Campaigns = () => {
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Revenue</p>
-            <DollarSign className="w-4 h-4 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Reach</p>
+            <Users className="w-4 h-4 text-muted-foreground" />
           </div>
-          <p className="text-2xl font-bold text-foreground mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{totalReach.toLocaleString()}</p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
