@@ -55,7 +55,7 @@ const AutomationsSection = () => (
         transition={{ delay: 0.4 }}
         className="mt-12 text-center text-sm text-muted-foreground"
       >
-        These lifecycle automations often generate the majority of ecommerce email revenue.
+        These lifecycle automations drive the highest engagement and retention rates across channels.
       </motion.p>
     </div>
   </section>

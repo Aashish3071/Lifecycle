@@ -31,7 +31,7 @@ const categories = [
     id: "setup",
     label: "Set up your account",
     steps: [
-      { id: "connect", title: "Connect your e-commerce platform", time: "About 5 minutes", description: "Connect your Shopify, WooCommerce, or custom platform to sync products, orders, and customer data automatically.", action: "Connect", icon: Link2 },
+      { id: "connect", title: "Connect your data sources", time: "About 5 minutes", description: "Connect your website, Shopify, WooCommerce, or custom platform to sync customer data, events, and behavior automatically.", action: "Connect", icon: Link2 },
       { id: "tracking", title: "Turn on website tracking", time: "About 3 minutes", description: "Install our lightweight tracking snippet to capture visitor behavior and build customer profiles.", action: "Enable tracking", icon: BarChart3 },
       { id: "branding", title: "Add your branding", time: "About 2 minutes", description: "Upload your logo, set brand colors, and configure email sender details.", action: "Customize", icon: Palette },
     ],

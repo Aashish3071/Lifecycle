@@ -260,7 +260,7 @@ const Dashboard = () => (
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right text-foreground font-medium">{f.recovered}</td>
-                  <td className="px-5 py-3 text-right text-accent font-semibold">{f.revenue}</td>
+                  <td className="px-5 py-3 text-right text-accent font-semibold">{f.convRate}</td>
                 </tr>
               ))}
             </tbody>

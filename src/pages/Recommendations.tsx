@@ -95,7 +95,7 @@ const recommendations = [
     icon: RefreshCw,
     title: "456 customers due for repeat purchase reminders",
     description:
-      "Based on average reorder cycles, these customers are likely to need a refill or repurchase. A gentle reminder increases reorder rates by 18%.",
+      "Based on average reorder cycles, these customers are likely ready to repurchase. A timely reminder increases reorder rates by 18%.",
     metric: "456",
     metricLabel: "customers due",
     action: "Send Reorder Reminders",

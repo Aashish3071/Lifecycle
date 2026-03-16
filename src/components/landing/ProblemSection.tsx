@@ -56,7 +56,7 @@ const ProblemSection = () => (
             ))}
           </ul>
           <motion.p variants={fadeUp} custom={7} className="mt-8 text-muted-foreground">
-            But this data lives across multiple tools. They provide reports, but rarely translate insights into clear marketing actions.
+            But this data lives across multiple tools. No single platform tells you which customers to contact, when they're most likely to respond, what message will resonate, or which channel performs best.
           </motion.p>
         </div>
 
