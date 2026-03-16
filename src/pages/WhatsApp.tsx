@@ -86,7 +86,7 @@ const campaigns = [
     replied: 0,
     readRate: 0,
     replyRate: 0,
-    revenue: "$0",
+    revenue: undefined,
     message: "Time to restock? Your {{product}} might be running low 🔄",
   },
 ];
