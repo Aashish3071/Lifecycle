@@ -58,7 +58,7 @@ const campaigns = [
     replied: 560,
     readRate: 90.0,
     replyRate: 10.0,
-    revenue: "$0",
+    revenue: undefined,
     message: "Your order #{{order_id}} has been confirmed! Track it here 📦",
   },
   {
