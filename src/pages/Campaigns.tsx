@@ -16,7 +16,7 @@ import {
   Pause,
   FlaskConical,
   ArrowUpRight,
-  DollarSign,
+  
   Users,
   BarChart3,
 } from "lucide-react";
