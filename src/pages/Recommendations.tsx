@@ -35,7 +35,7 @@ const recommendations = [
     icon: ShoppingCart,
     title: "324 abandoned checkouts need recovery emails",
     description:
-      "Customers left items worth $18,420 in their carts over the past 7 days. A 3-step email recovery sequence typically recaptures 8-12% of this revenue.",
+      "324 customers left items in their carts over the past 7 days. A 3-step email recovery sequence typically re-engages 8-12% of these customers.",
     metric: "324",
     metricLabel: "customers to reach",
     action: "Launch Recovery Sequence",
