@@ -79,7 +79,7 @@ const automations = [
     sent: 0,
     converted: 0,
     conversionRate: 0,
-    revenue: "$0",
+    engagementRate: "0%",
     icon: Clock,
     lastTriggered: "Never",
   },
