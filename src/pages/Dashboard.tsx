@@ -75,11 +75,11 @@ const engagementChannels = [
 
 /* ── Automated flows status ────────────────────────────────── */
 const activeFlows = [
-  { name: "Abandoned Cart Recovery", status: "active" as const, recovered: 89, sent: 324, revenue: "$4,210" },
-  { name: "Post-Purchase Cross Sell", status: "active" as const, recovered: 42, sent: 156, revenue: "$2,890" },
-  { name: "Dormant Customer Win-Back", status: "active" as const, recovered: 18, sent: 210, revenue: "$1,080" },
-  { name: "Browse Abandonment", status: "active" as const, recovered: 63, sent: 892, revenue: "$1,740" },
-  { name: "Reorder Reminder", status: "paused" as const, recovered: 0, sent: 0, revenue: "$0" },
+  { name: "Abandoned Cart Recovery", status: "active" as const, recovered: 89, sent: 324, convRate: "27%" },
+  { name: "Post-Purchase Cross Sell", status: "active" as const, recovered: 42, sent: 156, convRate: "27%" },
+  { name: "Dormant Customer Win-Back", status: "active" as const, recovered: 18, sent: 210, convRate: "9%" },
+  { name: "Browse Abandonment", status: "active" as const, recovered: 63, sent: 892, convRate: "7%" },
+  { name: "Reorder Reminder", status: "paused" as const, recovered: 0, sent: 0, convRate: "0%" },
 ];
 
 const severityStyles = {
