@@ -17,11 +17,13 @@ import {
   MessageCircle,
   AlertTriangle,
   Clock,
-  DollarSign,
   ShoppingCart,
   TrendingDown,
   Send,
   Shield,
+  CalendarClock,
+  Activity,
+  Repeat,
 } from "lucide-react";
 
 const churnCustomers = [
@@ -30,78 +32,78 @@ const churnCustomers = [
     name: "Sarah Mitchell",
     email: "sarah.m@email.com",
     riskScore: 92,
-    lastActivity: "78 days ago",
-    lastPurchase: "82 days ago",
-    ltv: "$1,240",
+    recency: "78 days",
+    avgOrderInterval: "22 days",
     totalOrders: 14,
+    engagementScore: 8,
     lastChannel: "Email",
     signals: ["No email opens in 45 days", "Unsubscribed from SMS", "Cart abandoned twice"],
-    suggestedAction: "Send personal win-back email with 20% off",
+    suggestedAction: "Send personal re-engagement email",
   },
   {
     id: "c-2",
     name: "James Rodriguez",
     email: "james.r@email.com",
     riskScore: 87,
-    lastActivity: "62 days ago",
-    lastPurchase: "68 days ago",
-    ltv: "$890",
+    recency: "62 days",
+    avgOrderInterval: "28 days",
     totalOrders: 8,
+    engagementScore: 12,
     lastChannel: "WhatsApp",
     signals: ["Stopped opening WhatsApp messages", "Browsed but didn't buy (3x)"],
-    suggestedAction: "WhatsApp message with curated picks",
+    suggestedAction: "WhatsApp message with curated product picks",
   },
   {
     id: "c-3",
     name: "Emily Chen",
     email: "emily.c@email.com",
     riskScore: 84,
-    lastActivity: "55 days ago",
-    lastPurchase: "60 days ago",
-    ltv: "$2,100",
+    recency: "55 days",
+    avgOrderInterval: "18 days",
     totalOrders: 22,
+    engagementScore: 15,
     lastChannel: "Email",
-    signals: ["High LTV at risk", "Opened last email but didn't click", "Purchase frequency dropped 60%"],
-    suggestedAction: "VIP re-engagement with exclusive early access",
+    signals: ["High-frequency buyer slowing down", "Opened last email but didn't click", "Purchase frequency dropped 60%"],
+    suggestedAction: "Re-engagement with early access to new products",
   },
   {
     id: "c-4",
     name: "Michael Park",
     email: "michael.p@email.com",
     riskScore: 78,
-    lastActivity: "48 days ago",
-    lastPurchase: "52 days ago",
-    ltv: "$560",
+    recency: "48 days",
+    avgOrderInterval: "30 days",
     totalOrders: 6,
+    engagementScore: 18,
     lastChannel: "Email",
     signals: ["Support ticket unresolved", "Negative review left"],
-    suggestedAction: "Personal outreach to resolve complaint",
+    suggestedAction: "Personal outreach to resolve concern",
   },
   {
     id: "c-5",
     name: "Lisa Thompson",
     email: "lisa.t@email.com",
     riskScore: 73,
-    lastActivity: "40 days ago",
-    lastPurchase: "45 days ago",
-    ltv: "$430",
+    recency: "40 days",
+    avgOrderInterval: "25 days",
     totalOrders: 5,
+    engagementScore: 22,
     lastChannel: "WhatsApp",
-    signals: ["Reduced email engagement", "Competitor purchase detected"],
-    suggestedAction: "Competitive offer via WhatsApp",
+    signals: ["Reduced email engagement", "Browsing competitor products"],
+    suggestedAction: "Send follow-up via WhatsApp",
   },
   {
     id: "c-6",
     name: "David Kim",
     email: "david.k@email.com",
     riskScore: 68,
-    lastActivity: "35 days ago",
-    lastPurchase: "38 days ago",
-    ltv: "$780",
+    recency: "35 days",
+    avgOrderInterval: "20 days",
     totalOrders: 9,
+    engagementScore: 25,
     lastChannel: "Email",
-    signals: ["Subscription downgraded", "Email click rate dropped 40%"],
-    suggestedAction: "Reorder reminder with loyalty reward",
+    signals: ["Email click rate dropped 40%", "Overdue for reorder by 15 days"],
+    suggestedAction: "Reorder reminder email",
   },
 ];
 
@@ -148,16 +150,15 @@ const ChurnRisk = () => {
       : setSelected(new Set(filtered.map((c) => c.id)));
   };
 
-  const atRiskRevenue = "$48,200";
   const avgRiskScore = Math.round(churnCustomers.reduce((a, c) => a + c.riskScore, 0) / churnCustomers.length);
+  const avgEngagement = Math.round(churnCustomers.reduce((a, c) => a + c.engagementScore, 0) / churnCustomers.length);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground">Churn Risk</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Customers most likely to churn — with risk scores and suggested win-back actions.
+          Customers most likely to churn — with risk scores and suggested next steps.
         </p>
       </div>
 
@@ -165,7 +166,7 @@ const ChurnRisk = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: "At-Risk Customers", value: churnCustomers.length.toString(), icon: UserX, color: "text-destructive", sub: "Score 60+" },
-          { label: "Revenue at Risk", value: atRiskRevenue, icon: DollarSign, color: "text-accent", sub: "Combined LTV" },
+          { label: "Avg Engagement Score", value: `${avgEngagement}/100`, icon: Activity, color: "text-accent", sub: "Low = higher risk" },
           { label: "Avg Risk Score", value: `${avgRiskScore}/100`, icon: Shield, color: "text-destructive", sub: "Higher = worse" },
         ].map((s) => (
           <Card key={s.label} className="p-4">
@@ -198,7 +199,7 @@ const ChurnRisk = () => {
             <span className="text-xs text-muted-foreground">{selected.size} selected</span>
             <Button size="sm" variant="default" className="gap-1.5 text-xs">
               <Send className="w-3 h-3" />
-              Send Win-Back Campaign
+              Send Re-engagement Campaign
             </Button>
             <Button size="sm" variant="outline" className="text-xs" onClick={() => setSelected(new Set())}>
               Clear
@@ -246,19 +247,23 @@ const ChurnRisk = () => {
                 </div>
                 <p className="text-xs text-muted-foreground">{customer.email}</p>
 
-                {/* Key metrics */}
+                {/* Key metrics — aligned with 6 core metrics */}
                 <div className="flex flex-wrap gap-4 mt-3">
                   <div className="flex items-center gap-1.5 text-xs">
-                    <Clock className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">Last active: {customer.lastActivity}</span>
+                    <CalendarClock className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Recency: {customer.recency}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
-                    <ShoppingCart className="w-3 h-3 text-muted-foreground" />
+                    <Repeat className="w-3 h-3 text-muted-foreground" />
                     <span className="text-muted-foreground">{customer.totalOrders} orders</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
-                    <DollarSign className="w-3 h-3 text-accent" />
-                    <span className="font-medium text-foreground">{customer.ltv} LTV</span>
+                    <Clock className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Avg interval: {customer.avgOrderInterval}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Activity className="w-3 h-3 text-accent" />
+                    <span className="font-medium text-foreground">Engagement: {customer.engagementScore}/100</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
                     {customer.lastChannel === "Email" ? <Mail className="w-3 h-3 text-muted-foreground" /> : <MessageCircle className="w-3 h-3 text-muted-foreground" />}

@@ -16,7 +16,64 @@ import {
   Eye,
   Send,
   Users,
+  CalendarClock,
+  Repeat,
+  Activity,
+  Package,
+  MousePointerClick,
 } from "lucide-react";
+
+/* ── 6 Core Customer Metrics ──────────────────────────────── */
+const coreMetrics = [
+  {
+    label: "Avg. Recency",
+    value: "18 days",
+    sub: "Since last purchase",
+    icon: CalendarClock,
+    color: "text-primary",
+    detail: "3,420 active in last 14 days",
+  },
+  {
+    label: "Purchase Frequency",
+    value: "1.4/mo",
+    sub: "Orders per customer",
+    icon: Repeat,
+    color: "text-accent",
+    detail: "32% are repeat buyers",
+  },
+  {
+    label: "Avg. Order Interval",
+    value: "26 days",
+    sub: "Between purchases",
+    icon: Clock,
+    color: "text-primary",
+    detail: "892 overdue for reorder",
+  },
+  {
+    label: "Engagement Score",
+    value: "64/100",
+    sub: "Across all channels",
+    icon: Activity,
+    color: "text-accent",
+    detail: "1,247 below threshold",
+  },
+  {
+    label: "Product Interest",
+    value: "3.2 categories",
+    sub: "Avg. per customer",
+    icon: Package,
+    color: "text-primary",
+    detail: "Top: Electronics, Apparel",
+  },
+  {
+    label: "Cart Intent Score",
+    value: "324 high",
+    sub: "Above intent threshold",
+    icon: MousePointerClick,
+    color: "text-accent",
+    detail: "Added to cart, didn't buy",
+  },
+];
 
 /* ── Priority Actions (the core value) ─────────────────────── */
 const priorityActions = [
@@ -24,44 +81,48 @@ const priorityActions = [
     id: 1,
     severity: "high" as const,
     icon: ShoppingCart,
-    title: "324 abandoned checkouts",
-    description: "Customers left items in cart in the last 7 days. Consider sending a follow-up email to re-engage them.",
+    title: "324 high-intent customers haven't purchased",
+    description:
+      "These customers added items to cart or started checkout in the last 7 days but didn't complete. Consider sending a follow-up email.",
     metric: "324",
     metricLabel: "customers to reach",
-    action: "Send Recovery Emails",
+    action: "View Customers",
     channel: "Email",
   },
   {
     id: 2,
     severity: "high" as const,
     icon: UserX,
-    title: "1,247 dormant customers",
-    description: "Haven't purchased or engaged in 60+ days. Consider a re-engagement campaign before they churn.",
+    title: "1,247 customers showing low engagement",
+    description:
+      "Engagement score dropped below threshold. No email opens, clicks, or site visits in 60+ days. Consider a re-engagement campaign.",
     metric: "38%",
     metricLabel: "at risk of churning",
-    action: "Launch Win-Back Campaign",
+    action: "View Segment",
     channel: "Email + WhatsApp",
   },
   {
     id: 3,
     severity: "medium" as const,
-    icon: TrendingDown,
-    title: "Email open rates dropping",
-    description: "Open rates declined 12% this month. Consider segmenting your list and refreshing subject lines.",
-    metric: "-12%",
-    metricLabel: "vs last month",
-    action: "Review Email Strategy",
+    icon: CalendarClock,
+    title: "892 customers overdue for reorder",
+    description:
+      "These customers have passed their average order interval. Their typical buying cycle suggests they may be ready for a reminder.",
+    metric: "892",
+    metricLabel: "past avg. interval",
+    action: "View Customers",
     channel: "Email",
   },
   {
     id: 4,
     severity: "low" as const,
     icon: MessageCircle,
-    title: "892 WhatsApp-engaged users",
-    description: "These users actively respond to WhatsApp messages. Nudge them with a personalized product recommendation.",
+    title: "WhatsApp engagement outperforming Email",
+    description:
+      "892 customers respond better on WhatsApp (72% response rate vs 39% email open rate). Consider shifting outreach for this segment.",
     metric: "72%",
-    metricLabel: "response rate",
-    action: "Send Recommendations",
+    metricLabel: "WhatsApp response rate",
+    action: "View Analysis",
     channel: "WhatsApp",
   },
 ];
@@ -75,11 +136,11 @@ const engagementChannels = [
 
 /* ── Automated flows status ────────────────────────────────── */
 const activeFlows = [
-  { name: "Abandoned Cart Recovery", status: "active" as const, recovered: 89, sent: 324, convRate: "27%" },
-  { name: "Post-Purchase Cross Sell", status: "active" as const, recovered: 42, sent: 156, convRate: "27%" },
-  { name: "Dormant Customer Win-Back", status: "active" as const, recovered: 18, sent: 210, convRate: "9%" },
-  { name: "Browse Abandonment", status: "active" as const, recovered: 63, sent: 892, convRate: "7%" },
-  { name: "Reorder Reminder", status: "paused" as const, recovered: 0, sent: 0, convRate: "0%" },
+  { name: "Cart Abandonment Follow-up", status: "active" as const, reached: 324, sent: 324, convRate: "27%" },
+  { name: "Post-Purchase Check-in", status: "active" as const, reached: 156, sent: 156, convRate: "27%" },
+  { name: "Dormant Customer Re-engagement", status: "active" as const, reached: 210, sent: 210, convRate: "9%" },
+  { name: "Reorder Reminder", status: "active" as const, reached: 892, sent: 892, convRate: "12%" },
+  { name: "Browse Abandonment Nudge", status: "paused" as const, reached: 0, sent: 0, convRate: "0%" },
 ];
 
 const severityStyles = {
@@ -112,23 +173,29 @@ const Dashboard = () => (
       </div>
     </div>
 
-    {/* Quick health summary */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {[
-        { label: "Active Customers", value: "8,432", sub: "Last 30 days", icon: Users, color: "text-accent" },
-        { label: "At-Risk Customers", value: "1,247", sub: "60+ days inactive", icon: AlertTriangle, color: "text-destructive" },
-        { label: "Recovered Customers", value: "212", sub: "Re-engaged this month", icon: Zap, color: "text-accent" },
-        { label: "Engagement Score", value: "64/100", sub: "Across all channels", icon: Target, color: "text-primary" },
-      ].map((s) => (
-        <Card key={s.label} className="p-5">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{s.label}</span>
-            <s.icon className={`w-4 h-4 ${s.color} opacity-60`} />
-          </div>
-          <p className="text-2xl font-display font-bold text-foreground">{s.value}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{s.sub}</p>
-        </Card>
-      ))}
+    {/* ── 6 Core Metrics ──────────────────────────────────── */}
+    <div>
+      <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <Activity className="w-4 h-4 text-primary" />
+        Customer Health Metrics
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {coreMetrics.map((m) => (
+          <Card key={m.label} className="p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                {m.label}
+              </span>
+              <m.icon className={`w-4 h-4 ${m.color} opacity-60`} />
+            </div>
+            <p className="text-2xl font-display font-bold text-foreground">{m.value}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{m.sub}</p>
+            <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border">
+              {m.detail}
+            </p>
+          </Card>
+        ))}
+      </div>
     </div>
 
     {/* ── Priority Actions ──────────────────────────────────── */}
@@ -180,7 +247,7 @@ const Dashboard = () => (
                 </div>
                 <Button size="sm" variant="default" className="shrink-0 gap-1.5 text-xs sm:text-sm">
                   <span className="hidden sm:inline">{item.action}</span>
-                  <span className="sm:hidden">Act</span>
+                  <span className="sm:hidden">View</span>
                   <ArrowRight className="w-3 h-3" />
                 </Button>
               </div>
@@ -196,7 +263,7 @@ const Dashboard = () => (
       <Card className="lg:col-span-2 p-0 overflow-hidden">
         <div className="px-5 py-4 border-b border-border">
           <h2 className="text-sm font-semibold text-foreground">Channel Engagement</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">How users interact across channels</p>
+          <p className="text-xs text-muted-foreground mt-0.5">How customers interact across channels</p>
         </div>
         <div className="divide-y divide-border">
           {engagementChannels.map((c) => (
@@ -235,8 +302,7 @@ const Dashboard = () => (
               <tr className="border-b border-border text-muted-foreground">
                 <th className="text-left px-5 py-3 font-medium">Flow</th>
                 <th className="text-center px-5 py-3 font-medium">Status</th>
-                <th className="text-right px-5 py-3 font-medium">Sent</th>
-                <th className="text-right px-5 py-3 font-medium">Converted</th>
+                <th className="text-right px-5 py-3 font-medium">Reached</th>
                 <th className="text-right px-5 py-3 font-medium">Conv. Rate</th>
               </tr>
             </thead>
@@ -256,10 +322,9 @@ const Dashboard = () => (
                   </td>
                   <td className="px-5 py-3 text-right text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
-                      <Send className="w-3 h-3" /> {f.sent}
+                      <Send className="w-3 h-3" /> {f.reached}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right text-foreground font-medium">{f.recovered}</td>
                   <td className="px-5 py-3 text-right text-accent font-semibold">{f.convRate}</td>
                 </tr>
               ))}
