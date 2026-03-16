@@ -40,7 +40,6 @@ const categories = [
     id: "audience",
     label: "Grow your audience",
     steps: [
-      { id: "form", title: "Create a sign-up form", time: "About 10 minutes", description: "Build an embedded or pop-up form to capture emails and grow your subscriber list.", action: "Create form", icon: FormInput },
       { id: "import", title: "Import existing contacts", time: "About 5 minutes", description: "Upload a CSV or connect your CRM to bring in your existing customer list.", action: "Import", icon: Users },
       { id: "whatsapp", title: "Connect WhatsApp Business", time: "About 5 minutes", description: "Link your WhatsApp Business account to send personalized messages and reach customers on their preferred channel.", action: "Connect WhatsApp", icon: MessageCircle },
     ],
