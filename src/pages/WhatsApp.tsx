@@ -72,8 +72,8 @@ const campaigns = [
     replied: 0,
     readRate: 0,
     replyRate: 0,
-    revenue: "$0",
-    message: "🔥 Flash Sale! 40% off everything for 24 hours only!",
+    revenue: undefined,
+    message: "🔥 Don't miss out! Check out our latest collection, available for a limited time only!",
   },
   {
     id: 5,
