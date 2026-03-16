@@ -76,7 +76,6 @@ const campaigns = [
     spent: "$4,500",
     reach: 18600,
     conversions: 3348,
-    revenue: "$133,920",
     convRate: 18.0,
     abTest: { variant: "A: Urgency copy", winner: true, lift: "+22%" },
   },
