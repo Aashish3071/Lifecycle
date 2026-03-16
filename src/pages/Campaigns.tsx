@@ -90,7 +90,6 @@ const campaigns = [
     spent: "$3,000",
     reach: 14200,
     conversions: 2130,
-    revenue: "$63,900",
     convRate: 15.0,
     abTest: null,
   },
