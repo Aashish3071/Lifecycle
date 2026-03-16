@@ -47,9 +47,8 @@ const campaigns = [
     spent: "$1,420",
     reach: 3200,
     conversions: 384,
-    revenue: "$15,360",
     convRate: 12.0,
-    abTest: { variant: "B: Free shipping", winner: true, lift: "+8%" },
+    abTest: { variant: "B: Personalized copy", winner: true, lift: "+8%" },
   },
   {
     id: 3,
