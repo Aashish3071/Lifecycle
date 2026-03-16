@@ -1,14 +1,11 @@
 import { motion } from "framer-motion";
-import { BarChart3, Mail, MessageCircle } from "lucide-react";
-import shopifyLogo from "../../assets/shopify-logo.png";
+import { BarChart3, Mail, MessageCircle, Globe } from "lucide-react";
 
 const integrations = [
-  { icon: "image", image: shopifyLogo, name: "Shopify" },
+  { icon: Globe, name: "Your Website" },
   { icon: BarChart3, name: "Google Analytics (GA4)" },
-  { icon: Mail, name: "Email Providers" },
+  { icon: Mail, name: "Email" },
   { icon: MessageCircle, name: "WhatsApp" },
-  { icon: BarChart3, name: "WooCommerce" },
-  { icon: BarChart3, name: "Custom Platforms" },
 ];
 
 const IntegrationsSection = () => (
