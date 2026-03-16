@@ -291,7 +291,7 @@ const Recommendations = () => {
                   {/* Meta row */}
                   <div className="flex flex-wrap items-center gap-4 mt-3">
                     <div className="flex items-center gap-1.5 text-xs">
-                      <DollarSign className="w-3 h-3 text-accent" />
+                      <Target className="w-3 h-3 text-accent" />
                       <span className="font-bold text-foreground">{item.metric}</span>
                       <span className="text-muted-foreground">{item.metricLabel}</span>
                     </div>
