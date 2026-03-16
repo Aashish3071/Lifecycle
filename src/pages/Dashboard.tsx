@@ -117,7 +117,7 @@ const Dashboard = () => (
       {[
         { label: "Active Customers", value: "8,432", sub: "Last 30 days", icon: Users, color: "text-accent" },
         { label: "At-Risk Customers", value: "1,247", sub: "60+ days inactive", icon: AlertTriangle, color: "text-destructive" },
-        { label: "Recovered Revenue", value: "$8,840", sub: "This month via flows", icon: Zap, color: "text-accent" },
+        { label: "Recovered Customers", value: "212", sub: "Re-engaged this month", icon: Zap, color: "text-accent" },
         { label: "Engagement Score", value: "64/100", sub: "Across all channels", icon: Target, color: "text-primary" },
       ].map((s) => (
         <Card key={s.label} className="p-5">
