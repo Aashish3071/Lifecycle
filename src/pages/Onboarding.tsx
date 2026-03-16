@@ -61,8 +61,8 @@ const categories = [
 ];
 
 const quickCards = [
-  { title: "Connect your platform", time: "About 5 minutes", description: "Connect your e-commerce platform to access your data and enable syncing products and orders.", action: "Connect platform", icon: Link2 },
-  { title: "Create a sign-up form", time: "About 10 minutes", description: "Create a form on your website to grow your audience and start building customer relationships.", action: "Create form", icon: FormInput },
+  { title: "Connect your platform", time: "About 5 minutes", description: "Connect your Shopify, WooCommerce, or custom platform to sync customer data and events.", action: "Connect platform", icon: Link2 },
+  { title: "Import your contacts", time: "About 5 minutes", description: "Upload a CSV or connect your CRM to bring in your existing customer list.", action: "Import contacts", icon: Users },
   { title: "Create a welcome flow", time: "About 15 minutes", description: "Create a flow that automatically sends a welcome message to new subscribers of your brand.", action: "Create flow", icon: Mail },
 ];
 
