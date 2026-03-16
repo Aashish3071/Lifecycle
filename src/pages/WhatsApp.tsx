@@ -44,8 +44,8 @@ const campaigns = [
     replied: 194,
     readRate: 80.0,
     replyRate: 16.0,
-    revenue: "$5,820",
-    message: "We miss you! Here's an exclusive 20% off just for you 💛",
+    revenue: undefined,
+    message: "We miss you! Check out what's new since your last visit 💛",
   },
   {
     id: 3,
