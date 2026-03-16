@@ -237,7 +237,7 @@ const Dashboard = () => (
                 <th className="text-center px-5 py-3 font-medium">Status</th>
                 <th className="text-right px-5 py-3 font-medium">Sent</th>
                 <th className="text-right px-5 py-3 font-medium">Converted</th>
-                <th className="text-right px-5 py-3 font-medium">Revenue</th>
+                <th className="text-right px-5 py-3 font-medium">Conv. Rate</th>
               </tr>
             </thead>
             <tbody>
