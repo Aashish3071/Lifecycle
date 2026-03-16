@@ -29,8 +29,8 @@ const steps = [
   {
     icon: Target,
     title: "Recommended Marketing Action",
-    desc: "The system identifies the most valuable action to take.",
-    detail: "The decision engine evaluates each customer's stage, recent behavior, and predicted lifetime value to surface the single highest-impact action.",
+    desc: "The system suggests the most valuable action to take.",
+    detail: "The analysis engine evaluates each customer's stage, recent behavior, and engagement patterns to suggest the highest-impact next step.",
   },
   {
     icon: Pen,

@@ -31,7 +31,7 @@ const segments = [
     description: "Active in last 14 days — opened emails, clicked links, or made purchases.",
     topActions: [
       { label: "Send product recommendations", icon: Gift, channel: "Email" },
-      { label: "Upsell with exclusive offer", icon: Target, channel: "WhatsApp" },
+      { label: "Suggest relevant product recommendations", icon: Target, channel: "WhatsApp" },
     ],
     metrics: [
       { label: "Avg. Order Value", value: "$82" },

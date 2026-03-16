@@ -229,8 +229,8 @@ const Campaigns = () => {
                           <p className="font-semibold text-foreground">{c.convRate}%</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Revenue</p>
-                          <p className="font-semibold text-accent">{c.revenue}</p>
+                          <p className="text-xs text-muted-foreground">Conversions</p>
+                          <p className="font-semibold text-accent">{c.conversions.toLocaleString()}</p>
                         </div>
                       </>
                     )}

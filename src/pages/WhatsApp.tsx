@@ -208,8 +208,8 @@ const WhatsApp = () => {
                         <p className="font-semibold text-foreground">{c.replyRate}%</p>
                       </div>
                       <div className="text-center hidden sm:block">
-                        <p className="text-xs text-muted-foreground">Revenue</p>
-                        <p className="font-semibold text-accent">{c.revenue}</p>
+                        <p className="text-xs text-muted-foreground">Replied</p>
+                        <p className="font-semibold text-accent">{c.replied.toLocaleString()}</p>
                       </div>
                     </div>
                   )}

@@ -197,8 +197,8 @@ const Automations = () => {
                   </p>
                 </div>
                 <div className="text-center hidden sm:block">
-                  <p className="text-xs text-muted-foreground">Revenue</p>
-                  <p className="font-semibold text-foreground">{flow.revenue}</p>
+                  <p className="text-xs text-muted-foreground">Engagement</p>
+                  <p className="font-semibold text-foreground">{flow.engagementRate}</p>
                 </div>
                 <Switch
                   checked={flow.status === "active"}

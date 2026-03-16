@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "How is this different from Klaviyo or Mailchimp?",
-    a: "Traditional email platforms require you to manually build segments, design workflows, and decide timing. Lifecycle automates the decision-making process—it tells you who to contact, when, and with what message.",
+    a: "Traditional email platforms require you to manually build segments, design workflows, and decide timing. Lifecycle analyzes your data and suggests who to contact, when, and with what message—so you can act with confidence.",
   },
   {
     q: "Is my customer data secure?",

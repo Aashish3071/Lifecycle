@@ -50,7 +50,7 @@ const recommendations = [
     icon: UserX,
     title: "1,247 dormant customers at risk of permanent churn",
     description:
-      "These customers haven't purchased or engaged in 60+ days. A personalized win-back campaign with a time-limited offer converts 5-8% of dormant users.",
+      "These customers haven't purchased or engaged in 60+ days. A personalized re-engagement campaign can help recover 5-8% of dormant users.",
     metric: "38%",
     metricLabel: "churn probability",
     action: "Launch Win-Back Campaign",

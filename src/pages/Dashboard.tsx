@@ -36,7 +36,7 @@ const priorityActions = [
     severity: "high" as const,
     icon: UserX,
     title: "1,247 dormant customers",
-    description: "Haven't purchased or engaged in 60+ days. Re-engage with a win-back offer before they churn.",
+    description: "Haven't purchased or engaged in 60+ days. Consider a re-engagement campaign before they churn.",
     metric: "38%",
     metricLabel: "at risk of churning",
     action: "Launch Win-Back Campaign",
