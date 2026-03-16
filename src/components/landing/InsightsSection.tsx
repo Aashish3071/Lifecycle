@@ -23,7 +23,7 @@ const cards = [
   {
     icon: UserCheck,
     insight: "12 high-value customers have not purchased in 60 days.",
-    action: "Trigger win-back campaign with incentive.",
+    action: "Suggest a win-back campaign via email or WhatsApp.",
     reason: "Churn risk identified.",
     chartData: [30, 25, 20, 16, 12],
     chartColor: "hsl(38 92% 50%)",

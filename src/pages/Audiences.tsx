@@ -31,7 +31,7 @@ const segments = [
     description: "Active in last 14 days — opened emails, clicked links, or made purchases.",
     topActions: [
       { label: "Send product recommendations", icon: Gift, channel: "Email" },
-      { label: "Upsell with exclusive offer", icon: Target, channel: "WhatsApp" },
+      { label: "Suggest relevant product recommendations", icon: Target, channel: "WhatsApp" },
     ],
     metrics: [
       { label: "Avg. Order Value", value: "$82" },
@@ -72,10 +72,10 @@ const segments = [
     borderColor: "border-border",
     trend: "+3%",
     trendDir: "up" as const,
-    description: "60+ days without any activity. Requires aggressive win-back strategy or sunsetting.",
+    description: "60+ days without any activity. Consider a targeted re-engagement strategy or sunsetting.",
     topActions: [
-      { label: "Win-back campaign with discount", icon: ShoppingCart, channel: "Email" },
-      { label: "Final attempt — exclusive offer", icon: Gift, channel: "Email + WhatsApp" },
+      { label: "Send a re-engagement email series", icon: ShoppingCart, channel: "Email" },
+      { label: "Follow up with a personal message", icon: Gift, channel: "Email + WhatsApp" },
     ],
     metrics: [
       { label: "Days Since Last Activity", value: "94 avg" },

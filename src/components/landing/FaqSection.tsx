@@ -8,8 +8,8 @@ import {
 
 const faqs = [
   {
-    q: "How does Lifecycle connect to my store?",
-    a: "Lifecycle integrates directly with Shopify, Google Analytics, and popular email providers. Setup takes minutes—just authorize your accounts and your customer data starts flowing automatically.",
+    q: "How does Lifecycle connect to my data?",
+    a: "Lifecycle imports data from your website, Google Analytics, email provider, and WhatsApp. Setup takes minutes—just authorize your accounts and your customer data starts flowing automatically.",
   },
   {
     q: "Do I need technical skills to use the platform?",
@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "How is this different from Klaviyo or Mailchimp?",
-    a: "Traditional email platforms require you to manually build segments, design workflows, and decide timing. Lifecycle automates the decision-making process—it tells you who to contact, when, and with what message.",
+    a: "Traditional email platforms require you to manually build segments, design workflows, and decide timing. Lifecycle analyzes your data and suggests who to contact, when, and with what message—so you can act with confidence.",
   },
   {
     q: "Is my customer data secure?",

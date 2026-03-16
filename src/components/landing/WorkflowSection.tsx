@@ -11,8 +11,8 @@ const steps = [
   {
     icon: Database,
     title: "Customer Data",
-    desc: "We collect signals from your store and marketing tools.",
-    detail: "Automatically syncs purchase history, browsing behavior, email engagement, and more from Shopify, GA4, and your email provider—no manual imports needed.",
+    desc: "We collect signals from your website and marketing tools.",
+    detail: "Automatically syncs purchase history, browsing behavior, email engagement, and more from your website, GA4, and email provider—no manual imports needed.",
   },
   {
     icon: Eye,
@@ -29,8 +29,8 @@ const steps = [
   {
     icon: Target,
     title: "Recommended Marketing Action",
-    desc: "The system identifies the most valuable action to take.",
-    detail: "The decision engine evaluates each customer's stage, recent behavior, and predicted lifetime value to surface the single highest-impact action.",
+    desc: "The system suggests the most valuable action to take.",
+    detail: "The analysis engine evaluates each customer's stage, recent behavior, and engagement patterns to suggest the highest-impact next step.",
   },
   {
     icon: Pen,

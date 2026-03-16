@@ -9,7 +9,7 @@ const signals = [
 ];
 
 const tools = [
-  { icon: ShoppingCart, name: "Shopify", desc: "Tracks purchases" },
+  { icon: ShoppingCart, name: "Your Website", desc: "Tracks purchases" },
   { icon: BarChart3, name: "GA4", desc: "Tracks behavior" },
   { icon: Mail, name: "Email tools", desc: "Tracks engagement" },
   { icon: MessageCircle, name: "WhatsApp", desc: "Tracks messaging" },

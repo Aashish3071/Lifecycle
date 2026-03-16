@@ -30,8 +30,8 @@ const campaigns = [
     replied: 445,
     readRate: 80.0,
     replyRate: 16.0,
-    revenue: "$8,900",
-    message: "Hey! You left items in your cart. Use code SAVE10 for 10% off 🛒",
+    revenue: undefined,
+    message: "Hey! You left items in your cart. Complete your order before they sell out 🛒",
   },
   {
     id: 2,
@@ -44,8 +44,8 @@ const campaigns = [
     replied: 194,
     readRate: 80.0,
     replyRate: 16.0,
-    revenue: "$5,820",
-    message: "We miss you! Here's an exclusive 20% off just for you 💛",
+    revenue: undefined,
+    message: "We miss you! Check out what's new since your last visit 💛",
   },
   {
     id: 3,
@@ -58,7 +58,7 @@ const campaigns = [
     replied: 560,
     readRate: 90.0,
     replyRate: 10.0,
-    revenue: "$0",
+    revenue: undefined,
     message: "Your order #{{order_id}} has been confirmed! Track it here 📦",
   },
   {
@@ -72,8 +72,8 @@ const campaigns = [
     replied: 0,
     readRate: 0,
     replyRate: 0,
-    revenue: "$0",
-    message: "🔥 Flash Sale! 40% off everything for 24 hours only!",
+    revenue: undefined,
+    message: "🔥 Don't miss out! Check out our latest collection, available for a limited time only!",
   },
   {
     id: 5,
@@ -86,7 +86,7 @@ const campaigns = [
     replied: 0,
     readRate: 0,
     replyRate: 0,
-    revenue: "$0",
+    revenue: undefined,
     message: "Time to restock? Your {{product}} might be running low 🔄",
   },
 ];
@@ -208,8 +208,8 @@ const WhatsApp = () => {
                         <p className="font-semibold text-foreground">{c.replyRate}%</p>
                       </div>
                       <div className="text-center hidden sm:block">
-                        <p className="text-xs text-muted-foreground">Revenue</p>
-                        <p className="font-semibold text-accent">{c.revenue}</p>
+                        <p className="text-xs text-muted-foreground">Replied</p>
+                        <p className="font-semibold text-accent">{c.replied.toLocaleString()}</p>
                       </div>
                     </div>
                   )}

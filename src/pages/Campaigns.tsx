@@ -16,7 +16,7 @@ import {
   Pause,
   FlaskConical,
   ArrowUpRight,
-  DollarSign,
+  
   Users,
   BarChart3,
 } from "lucide-react";
@@ -33,9 +33,8 @@ const campaigns = [
     spent: "$3,240",
     reach: 12400,
     conversions: 1860,
-    revenue: "$74,400",
     convRate: 15.0,
-    abTest: { variant: "A: 15% off", winner: true, lift: "+12%" },
+    abTest: { variant: "A: Urgency copy", winner: true, lift: "+12%" },
   },
   {
     id: 2,
@@ -48,9 +47,8 @@ const campaigns = [
     spent: "$1,420",
     reach: 3200,
     conversions: 384,
-    revenue: "$15,360",
     convRate: 12.0,
-    abTest: { variant: "B: Free shipping", winner: true, lift: "+8%" },
+    abTest: { variant: "B: Personalized copy", winner: true, lift: "+8%" },
   },
   {
     id: 3,
@@ -63,7 +61,6 @@ const campaigns = [
     spent: "$0",
     reach: 0,
     conversions: 0,
-    revenue: "$0",
     convRate: 0,
     abTest: null,
   },
@@ -78,7 +75,6 @@ const campaigns = [
     spent: "$4,500",
     reach: 18600,
     conversions: 3348,
-    revenue: "$133,920",
     convRate: 18.0,
     abTest: { variant: "A: Urgency copy", winner: true, lift: "+22%" },
   },
@@ -93,7 +89,6 @@ const campaigns = [
     spent: "$3,000",
     reach: 14200,
     conversions: 2130,
-    revenue: "$63,900",
     convRate: 15.0,
     abTest: null,
   },
@@ -108,7 +103,6 @@ const campaigns = [
     spent: "$680",
     reach: 4100,
     conversions: 328,
-    revenue: "$9,840",
     convRate: 8.0,
     abTest: null,
   },
@@ -131,7 +125,7 @@ const Campaigns = () => {
   const [tab, setTab] = useState("all");
   const filtered = tab === "all" ? campaigns : campaigns.filter((c) => c.status === tab);
 
-  const totalRevenue = campaigns.reduce((a, c) => a + parseFloat(c.revenue.replace(/[$,]/g, "")), 0);
+  const totalReach = campaigns.reduce((a, c) => a + c.reach, 0);
   const totalConversions = campaigns.reduce((a, c) => a + c.conversions, 0);
   const activeCampaigns = campaigns.filter((c) => c.status === "active").length;
 
@@ -158,10 +152,10 @@ const Campaigns = () => {
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Revenue</p>
-            <DollarSign className="w-4 h-4 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Reach</p>
+            <Users className="w-4 h-4 text-muted-foreground" />
           </div>
-          <p className="text-2xl font-bold text-foreground mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{totalReach.toLocaleString()}</p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
@@ -234,8 +228,8 @@ const Campaigns = () => {
                           <p className="font-semibold text-foreground">{c.convRate}%</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Revenue</p>
-                          <p className="font-semibold text-accent">{c.revenue}</p>
+                          <p className="text-xs text-muted-foreground">Conversions</p>
+                          <p className="font-semibold text-accent">{c.conversions.toLocaleString()}</p>
                         </div>
                       </>
                     )}

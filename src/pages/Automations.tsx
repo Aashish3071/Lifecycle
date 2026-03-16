@@ -27,7 +27,7 @@ const automations = [
     sent: 4280,
     converted: 856,
     conversionRate: 20.0,
-    revenue: "$34,240",
+    engagementRate: "20%",
     icon: ShoppingCart,
     lastTriggered: "2 min ago",
   },
@@ -40,7 +40,7 @@ const automations = [
     sent: 1920,
     converted: 288,
     conversionRate: 15.0,
-    revenue: "$11,520",
+    engagementRate: "15%",
     icon: UserX,
     lastTriggered: "18 min ago",
   },
@@ -53,7 +53,7 @@ const automations = [
     sent: 3150,
     converted: 1260,
     conversionRate: 40.0,
-    revenue: "$18,900",
+    engagementRate: "40%",
     icon: Gift,
     lastTriggered: "5 min ago",
   },
@@ -66,7 +66,7 @@ const automations = [
     sent: 980,
     converted: 147,
     conversionRate: 15.0,
-    revenue: "$4,410",
+    engagementRate: "15%",
     icon: Heart,
     lastTriggered: "2 days ago",
   },
@@ -79,7 +79,7 @@ const automations = [
     sent: 0,
     converted: 0,
     conversionRate: 0,
-    revenue: "$0",
+    engagementRate: "0%",
     icon: Clock,
     lastTriggered: "Never",
   },
@@ -197,8 +197,8 @@ const Automations = () => {
                   </p>
                 </div>
                 <div className="text-center hidden sm:block">
-                  <p className="text-xs text-muted-foreground">Revenue</p>
-                  <p className="font-semibold text-foreground">{flow.revenue}</p>
+                  <p className="text-xs text-muted-foreground">Engagement</p>
+                  <p className="font-semibold text-foreground">{flow.engagementRate}</p>
                 </div>
                 <Switch
                   checked={flow.status === "active"}

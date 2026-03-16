@@ -40,7 +40,7 @@ const HeroSection = ({ onRequestAccess }: HeroSectionProps) => (
         transition={{ duration: 0.7, delay: 0.3 }}
         className="mt-4 text-base md:text-lg text-hero-muted/70 font-body max-w-xl mx-auto leading-relaxed"
       >
-        Your website, GA4, email, and WhatsApp already collect valuable customer signals. We unify that data into one platform—so you know exactly who to contact, when they're most likely to respond, what message is most relevant, and which channel performs best.
+        Your website, GA4, email, and WhatsApp already collect valuable customer signals. We unify that data and surface clear suggestions—so you know which customers to focus on, when they're most likely to respond, what message is most relevant, and which channel performs best.
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

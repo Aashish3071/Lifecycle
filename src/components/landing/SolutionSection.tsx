@@ -23,7 +23,7 @@ const SolutionSection = () => (
           Your Customer Data, <span className="text-gradient">Working For You</span>
         </h2>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Our platform analyzes customer behavior and automatically determines the most valuable marketing actions.
+          Our platform analyzes customer behavior and suggests the most effective marketing actions for you to take.
         </p>
       </motion.div>
 
@@ -52,7 +52,7 @@ const SolutionSection = () => (
         transition={{ delay: 0.4 }}
         className="mt-12 text-center text-muted-foreground max-w-2xl mx-auto"
       >
-        Instead of manually analyzing reports or building segments, businesses get clear marketing actions based on real customer behavior.
+        Instead of manually analyzing reports or building segments, you get clear suggestions for marketing actions based on real customer behavior.
       </motion.p>
     </div>
   </section>
