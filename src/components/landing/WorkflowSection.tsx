@@ -11,8 +11,8 @@ const steps = [
   {
     icon: Database,
     title: "Customer Data",
-    desc: "We collect signals from your store and marketing tools.",
-    detail: "Automatically syncs purchase history, browsing behavior, email engagement, and more from Shopify, GA4, and your email provider—no manual imports needed.",
+    desc: "We collect signals from your website and marketing tools.",
+    detail: "Automatically syncs purchase history, browsing behavior, email engagement, and more from your website, GA4, and email provider—no manual imports needed.",
   },
   {
     icon: Eye,
