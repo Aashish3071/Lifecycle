@@ -34,9 +34,9 @@ const segments = [
       { label: "Suggest relevant product recommendations", icon: Target, channel: "WhatsApp" },
     ],
     metrics: [
-      { label: "Avg. Order Value", value: "$82" },
-      { label: "Email Open Rate", value: "54%" },
-      { label: "Repeat Purchase Rate", value: "32%" },
+      { label: "Avg. Recency", value: "6 days" },
+      { label: "Purchase Freq.", value: "2.1/mo" },
+      { label: "Engagement Score", value: "78/100" },
     ],
   },
   {
@@ -56,9 +56,9 @@ const segments = [
       { label: "Send personal WhatsApp check-in", icon: MessageCircle, channel: "WhatsApp" },
     ],
     metrics: [
-      { label: "Days Since Last Activity", value: "42 avg" },
+      { label: "Avg. Recency", value: "42 days" },
+      { label: "Engagement Score", value: "24/100" },
       { label: "Churn Probability", value: "38%" },
-      { label: "Lifetime Value", value: "$245" },
     ],
   },
   {
@@ -78,9 +78,9 @@ const segments = [
       { label: "Follow up with a personal message", icon: Gift, channel: "Email + WhatsApp" },
     ],
     metrics: [
-      { label: "Days Since Last Activity", value: "94 avg" },
+      { label: "Avg. Recency", value: "94 days" },
+      { label: "Engagement Score", value: "8/100" },
       { label: "Churn Probability", value: "72%" },
-      { label: "Lifetime Value", value: "$180" },
     ],
   },
   {
@@ -100,8 +100,8 @@ const segments = [
       { label: "Send post-purchase follow-up", icon: MessageCircle, channel: "WhatsApp" },
     ],
     metrics: [
-      { label: "First Order AOV", value: "$64" },
-      { label: "Welcome Email Opened", value: "68%" },
+      { label: "Avg. Recency", value: "8 days" },
+      { label: "Purchase Freq.", value: "1.0/mo" },
       { label: "2nd Purchase Rate", value: "12%" },
     ],
   },
