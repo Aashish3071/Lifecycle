@@ -8,8 +8,8 @@ import {
 
 const faqs = [
   {
-    q: "How does Lifecycle connect to my store?",
-    a: "Lifecycle integrates directly with Shopify, Google Analytics, and popular email providers. Setup takes minutes—just authorize your accounts and your customer data starts flowing automatically.",
+    q: "How does Lifecycle connect to my data?",
+    a: "Lifecycle imports data from your website, Google Analytics, email provider, and WhatsApp. Setup takes minutes—just authorize your accounts and your customer data starts flowing automatically.",
   },
   {
     q: "Do I need technical skills to use the platform?",
