@@ -126,7 +126,7 @@ const Campaigns = () => {
   const [tab, setTab] = useState("all");
   const filtered = tab === "all" ? campaigns : campaigns.filter((c) => c.status === tab);
 
-  const totalRevenue = campaigns.reduce((a, c) => a + parseFloat(c.revenue.replace(/[$,]/g, "")), 0);
+  const totalReach = campaigns.reduce((a, c) => a + c.reach, 0);
   const totalConversions = campaigns.reduce((a, c) => a + c.conversions, 0);
   const activeCampaigns = campaigns.filter((c) => c.status === "active").length;
 
