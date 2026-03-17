@@ -35,12 +35,6 @@ const coreItems = [
 const channelItems = [
   { title: "Email", url: "/dashboard/email", icon: Mail },
   { title: "WhatsApp", url: "/dashboard/whatsapp", icon: MessageCircle },
-  { title: "Campaigns", url: "/dashboard/campaigns", icon: Target },
-];
-
-const insightItems = [
-  { title: "Churn Risk", url: "/dashboard/churn", icon: UserX },
-  { title: "Engagement", url: "/dashboard/engagement", icon: BarChart3 },
 ];
 
 const AppSidebar = () => {
