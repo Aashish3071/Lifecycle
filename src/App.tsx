@@ -16,8 +16,6 @@ import Automations from "./pages/Automations";
 import CampaignBuilder from "./pages/CampaignBuilder";
 import Email from "./pages/Email";
 import WhatsApp from "./pages/WhatsApp";
-import Campaigns from "./pages/Campaigns";
-import Engagement from "./pages/Engagement";
 import Settings from "./pages/Settings";
 import AppLayout from "./components/app/AppLayout";
 
