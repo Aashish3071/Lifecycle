@@ -12,9 +12,10 @@ import {
   Link2,
   Users,
   Bell,
-  ShoppingCart,
-  MessageCircle,
+  Globe,
+  BarChart3,
   Mail,
+  MessageCircle,
   CheckCircle2,
   AlertCircle,
   Plus,
@@ -36,12 +37,30 @@ type TabId = (typeof tabs)[number]["id"];
 /* ── Mock data ───────────────────────────────────────────────── */
 const integrations = [
   {
-    id: "shopify",
-    name: "Shopify",
-    description: "Sync products, orders, and customer data from your Shopify store.",
-    icon: ShoppingCart,
+    id: "website",
+    name: "Your Website",
+    description: "Track customer behavior, purchases, and product views from your store.",
+    icon: Globe,
     connected: true,
-    detail: "mystore.myshopify.com",
+    detail: "demo.lifecycle.io",
+    lastSync: "5 min ago",
+  },
+  {
+    id: "ga4",
+    name: "Google Analytics (GA4)",
+    description: "Import traffic data, user journeys, and conversion events from GA4.",
+    icon: BarChart3,
+    connected: false,
+    detail: null,
+    lastSync: null,
+  },
+  {
+    id: "email",
+    name: "Email Provider",
+    description: "Connect your SMTP or email service to send transactional and marketing emails.",
+    icon: Mail,
+    connected: true,
+    detail: "smtp.lifecycle.io",
     lastSync: "12 min ago",
   },
   {
@@ -49,15 +68,6 @@ const integrations = [
     name: "WhatsApp Business",
     description: "Send personalized messages and campaigns via WhatsApp.",
     icon: MessageCircle,
-    connected: true,
-    detail: "+1 (555) 012-3456",
-    lastSync: "3 min ago",
-  },
-  {
-    id: "email",
-    name: "Email Provider",
-    description: "Connect your SMTP or email service to send transactional and marketing emails.",
-    icon: Mail,
     connected: false,
     detail: null,
     lastSync: null,
@@ -162,6 +172,11 @@ const Settings = () => {
           {/* ── Integrations ────────────────────────────────── */}
           {activeTab === "integrations" && (
             <div className="space-y-4">
+              <div className="bg-muted/50 rounded-lg px-4 py-3 border border-border">
+                <p className="text-xs text-muted-foreground">
+                  Connect your data sources to start collecting customer signals. The more sources connected, the better your recommendations.
+                </p>
+              </div>
               {integrations.map((int) => (
                 <Card key={int.id} className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -268,9 +283,8 @@ const Settings = () => {
               {[
                 { label: "Weekly performance digest", desc: "Summary of key metrics every Monday.", default: true },
                 { label: "Automation alerts", desc: "Get notified when a flow fails or pauses unexpectedly.", default: true },
-                { label: "Churn risk warnings", desc: "Alert when a high-value customer shows churn signals.", default: true },
+                { label: "Customer risk warnings", desc: "Alert when customers show disengagement signals.", default: true },
                 { label: "New team member joins", desc: "Notification when someone accepts an invite.", default: false },
-                { label: "Campaign completion", desc: "Alert when a campaign finishes sending.", default: false },
               ].map((pref) => (
                 <div key={pref.label} className="flex items-center justify-between py-1">
                   <div>
