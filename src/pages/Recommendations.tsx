@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,6 @@ import {
 import {
   ShoppingCart,
   UserX,
-  TrendingDown,
   MessageCircle,
   Mail,
   RefreshCw,
@@ -25,9 +25,10 @@ import {
   Clock,
   Target,
   Users,
-  Send,
+  CalendarClock,
 } from "lucide-react";
 
+/* ── Each recommendation maps to a specific lifecycle metric ── */
 const recommendations = [
   {
     id: "rec-1",
@@ -35,10 +36,12 @@ const recommendations = [
     icon: ShoppingCart,
     title: "324 abandoned checkouts need recovery emails",
     description:
-      "324 customers left items in their carts over the past 7 days. A 3-step email recovery sequence typically re-engages 8-12% of these customers.",
+      "High cart/intent scores detected. These customers added items but didn't purchase in the last 7 days. A recovery sequence re-engages 8-12%.",
     metric: "324",
-    metricLabel: "customers to reach",
-    action: "Launch Recovery Sequence",
+    metricLabel: "high-intent customers",
+    metricSource: "Cart Intent Score",
+    action: "Set Up Recovery Flow",
+    actionLink: "/dashboard/automations",
     channel: "email" as const,
     impact: "high" as const,
     timeframe: "Send within 24h for best results",
@@ -50,10 +53,12 @@ const recommendations = [
     icon: UserX,
     title: "1,247 dormant customers at risk of permanent churn",
     description:
-      "These customers haven't purchased or engaged in 60+ days. A personalized re-engagement campaign can help recover 5-8% of dormant users.",
-    metric: "38%",
-    metricLabel: "churn probability",
-    action: "Launch Win-Back Campaign",
+      "Engagement scores dropped below threshold. No opens, clicks, or visits in 60+ days. A re-engagement campaign recovers 5-8%.",
+    metric: "1,247",
+    metricLabel: "low engagement",
+    metricSource: "Engagement Score + Recency",
+    action: "View Dormant Segment",
+    actionLink: "/dashboard/audiences",
     channel: "email" as const,
     impact: "high" as const,
     timeframe: "Act within 7 days",
@@ -61,18 +66,20 @@ const recommendations = [
   },
   {
     id: "rec-3",
-    severity: "high" as const,
-    icon: TrendingDown,
-    title: "Email open rates dropped 12% — segment & refresh",
+    severity: "medium" as const,
+    icon: CalendarClock,
+    title: "892 customers overdue for their next purchase",
     description:
-      "Your email engagement is declining. We recommend splitting your audience into engaged vs. cold segments and A/B testing subject lines.",
-    metric: "-12%",
-    metricLabel: "vs. last month",
-    action: "Review Email Strategy",
+      "Average order interval exceeded. These customers typically reorder every 26 days — they're now past due. A timely reminder increases reorder rates by 18%.",
+    metric: "892",
+    metricLabel: "past avg. interval",
+    metricSource: "Avg. Order Interval",
+    action: "Set Up Reorder Flow",
+    actionLink: "/dashboard/automations",
     channel: "email" as const,
     impact: "medium" as const,
-    timeframe: "Review this week",
-    customers: 8430,
+    timeframe: "Optimal window: next 5 days",
+    customers: 892,
   },
   {
     id: "rec-4",
@@ -80,10 +87,12 @@ const recommendations = [
     icon: MessageCircle,
     title: "892 highly engaged WhatsApp users ready for upsell",
     description:
-      "These users actively respond to WhatsApp messages (72% response rate). Send personalized product recommendations to drive additional purchases.",
+      "These users actively respond to WhatsApp messages (72% response rate). Send personalized product recommendations based on their interest scores.",
     metric: "72%",
     metricLabel: "response rate",
-    action: "Send Recommendations",
+    metricSource: "Engagement Score + Product Interest",
+    action: "View Engaged Segment",
+    actionLink: "/dashboard/audiences",
     channel: "whatsapp" as const,
     impact: "medium" as const,
     timeframe: "Best sent Mon-Wed",
@@ -91,44 +100,33 @@ const recommendations = [
   },
   {
     id: "rec-5",
-    severity: "medium" as const,
-    icon: RefreshCw,
-    title: "456 customers due for repeat purchase reminders",
-    description:
-      "Based on average reorder cycles, these customers are likely ready to repurchase. A timely reminder increases reorder rates by 18%.",
-    metric: "456",
-    metricLabel: "customers due",
-    action: "Send Reorder Reminders",
-    channel: "email" as const,
-    impact: "medium" as const,
-    timeframe: "Optimal window: next 5 days",
-    customers: 456,
-  },
-  {
-    id: "rec-6",
     severity: "low" as const,
     icon: Eye,
     title: "1,890 browse-but-didn't-buy visitors this week",
     description:
-      "Visitors who viewed products but didn't add to cart. A browse abandonment nudge via email or on-site popup can convert 3-5% of these visitors.",
+      "Visited product pages but no cart activity. Product interest detected but intent score is low. A browse abandonment nudge converts 3-5%.",
     metric: "1,890",
-    metricLabel: "visitors",
-    action: "Activate Browse Nudge",
+    metricLabel: "browsers",
+    metricSource: "Product Interest + Cart Intent",
+    action: "Set Up Browse Flow",
+    actionLink: "/dashboard/automations",
     channel: "email" as const,
     impact: "low" as const,
     timeframe: "Within 48h of browse",
     customers: 1890,
   },
   {
-    id: "rec-7",
+    id: "rec-6",
     severity: "low" as const,
     icon: Users,
     title: "234 new customers haven't received a welcome flow",
     description:
-      "First-time buyers from the last 14 days haven't been onboarded with a welcome series. Welcome emails see 4x higher engagement than regular campaigns.",
+      "First-time buyers from the last 14 days with high purchase frequency potential. Welcome emails see 4x higher engagement than regular messages.",
     metric: "234",
     metricLabel: "new customers",
-    action: "Start Welcome Flow",
+    metricSource: "Recency + Purchase Frequency",
+    action: "Set Up Welcome Flow",
+    actionLink: "/dashboard/automations",
     channel: "email" as const,
     impact: "medium" as const,
     timeframe: "Send immediately",
@@ -154,6 +152,7 @@ const channelIcon = {
 };
 
 const Recommendations = () => {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [filterSeverity, setFilterSeverity] = useState("all");
   const [filterChannel, setFilterChannel] = useState("all");
@@ -188,20 +187,20 @@ const Recommendations = () => {
           Recommendations
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Actionable insights based on your customer data — prioritized by impact.
+          Actions suggested by your customer data — each linked to a specific metric and the next step to take.
         </p>
       </div>
 
-      {/* Filters + Bulk Actions */}
+      {/* Filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
           <Filter className="w-4 h-4 text-muted-foreground" />
           <Select value={filterSeverity} onValueChange={setFilterSeverity}>
             <SelectTrigger className="w-[130px] h-9 text-xs">
-              <SelectValue placeholder="Severity" />
+              <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Severity</SelectItem>
+              <SelectItem value="all">All Priority</SelectItem>
               <SelectItem value="high">High</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
               <SelectItem value="low">Low</SelectItem>
@@ -224,10 +223,6 @@ const Recommendations = () => {
             <span className="text-xs text-muted-foreground">
               {selected.size} selected
             </span>
-            <Button size="sm" variant="default" className="gap-1.5 text-xs">
-              <Send className="w-3 h-3" />
-              Execute Selected
-            </Button>
             <Button size="sm" variant="outline" className="text-xs" onClick={() => setSelected(new Set())}>
               Clear
             </Button>
@@ -296,8 +291,8 @@ const Recommendations = () => {
                       <span className="text-muted-foreground">{item.metricLabel}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs">
-                      <Users className="w-3 h-3 text-muted-foreground" />
-                      <span className="text-muted-foreground">{item.customers.toLocaleString()} customers</span>
+                      <Zap className="w-3 h-3 text-muted-foreground" />
+                      <span className="text-muted-foreground">Based on: {item.metricSource}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs">
                       <Clock className="w-3 h-3 text-muted-foreground" />
@@ -306,14 +301,24 @@ const Recommendations = () => {
                   </div>
                 </div>
 
-                <Button size="sm" variant="default" className="shrink-0 gap-1.5 hidden sm:flex">
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="shrink-0 gap-1.5 hidden sm:flex"
+                  onClick={() => navigate(item.actionLink)}
+                >
                   {item.action}
                   <ArrowRight className="w-3 h-3" />
                 </Button>
               </div>
               {/* Mobile action */}
               <div className="sm:hidden px-4 pb-4">
-                <Button size="sm" variant="default" className="w-full gap-1.5">
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="w-full gap-1.5"
+                  onClick={() => navigate(item.actionLink)}
+                >
                   {item.action}
                   <ArrowRight className="w-3 h-3" />
                 </Button>
