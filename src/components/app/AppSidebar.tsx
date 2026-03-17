@@ -2,14 +2,11 @@ import {
   LayoutDashboard,
   Zap,
   Users,
-  UserX,
   Workflow,
   Settings,
   ListChecks,
   Mail,
   MessageCircle,
-  Target,
-  BarChart3,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
