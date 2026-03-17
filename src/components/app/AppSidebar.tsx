@@ -98,7 +98,6 @@ const AppSidebar = () => {
 
         {renderGroup("Core", coreItems)}
         {renderGroup("Channels", channelItems)}
-        {renderGroup("Insights", insightItems)}
       </SidebarContent>
 
       <SidebarFooter className="px-3 pb-4">
