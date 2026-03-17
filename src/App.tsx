@@ -8,16 +8,12 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
-import DashboardPlaceholder from "./pages/DashboardPlaceholder";
 import Recommendations from "./pages/Recommendations";
 import Audiences from "./pages/Audiences";
-import ChurnRisk from "./pages/ChurnRisk";
 import Automations from "./pages/Automations";
 import CampaignBuilder from "./pages/CampaignBuilder";
 import Email from "./pages/Email";
 import WhatsApp from "./pages/WhatsApp";
-import Campaigns from "./pages/Campaigns";
-import Engagement from "./pages/Engagement";
 import Settings from "./pages/Settings";
 import AppLayout from "./components/app/AppLayout";
 
@@ -47,9 +43,6 @@ const App = () => (
               <Route path="automations/create" element={<CampaignBuilder />} />
               <Route path="email" element={<Email />} />
               <Route path="whatsapp" element={<WhatsApp />} />
-              <Route path="campaigns" element={<Campaigns />} />
-              <Route path="churn" element={<ChurnRisk />} />
-              <Route path="engagement" element={<Engagement />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
