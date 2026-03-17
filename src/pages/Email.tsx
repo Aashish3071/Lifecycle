@@ -1,4 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { campaignsApi } from "@/lib/api";
+import { formatDistanceToNow, format } from "date-fns";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,96 +22,30 @@ import {
   CheckCircle2,
   XCircle,
   ArrowUpRight,
+  Loader2,
 } from "lucide-react";
 
-const campaigns = [
-  {
-    id: 1,
-    name: "Holiday Cart Recovery",
-    status: "sent" as const,
-    sentAt: "Mar 12, 2026",
-    recipients: 4280,
-    delivered: 4156,
-    opened: 1872,
-    clicked: 624,
-    openRate: 45.0,
-    clickRate: 15.0,
-    revenue: "$12,480",
-    subject: "You left something behind 🛒",
-  },
-  {
-    id: 2,
-    name: "Welcome Series - Day 1",
-    status: "active" as const,
-    sentAt: "Ongoing",
-    recipients: 3150,
-    delivered: 3087,
-    opened: 1852,
-    clicked: 926,
-    openRate: 60.0,
-    clickRate: 30.0,
-    revenue: "$18,520",
-    subject: "Welcome to the family! Here's 15% off",
-  },
-  {
-    id: 3,
-    name: "Win-Back Dormant Users",
-    status: "sent" as const,
-    sentAt: "Mar 10, 2026",
-    recipients: 1920,
-    delivered: 1843,
-    opened: 553,
-    clicked: 166,
-    openRate: 30.0,
-    clickRate: 9.0,
-    revenue: "$4,980",
-    subject: "We miss you! Come back for 20% off",
-  },
-  {
-    id: 4,
-    name: "Product Launch Announcement",
-    status: "scheduled" as const,
-    sentAt: "Mar 18, 2026",
-    recipients: 8400,
-    delivered: 0,
-    opened: 0,
-    clicked: 0,
-    openRate: 0,
-    clickRate: 0,
-    revenue: "$0",
-    subject: "Something exciting is coming...",
-  },
-  {
-    id: 5,
-    name: "Monthly Newsletter",
-    status: "draft" as const,
-    sentAt: "—",
-    recipients: 0,
-    delivered: 0,
-    opened: 0,
-    clicked: 0,
-    openRate: 0,
-    clickRate: 0,
-    revenue: "$0",
-    subject: "March Updates & Exclusive Deals",
-  },
-];
-
 const statusConfig = {
-  sent: { label: "Sent", icon: CheckCircle2, style: "bg-emerald-500/10 text-emerald-600" },
-  active: { label: "Active", icon: TrendingUp, style: "bg-blue-500/10 text-blue-600" },
-  scheduled: { label: "Scheduled", icon: Clock, style: "bg-amber-500/10 text-amber-600" },
-  draft: { label: "Draft", icon: XCircle, style: "bg-muted text-muted-foreground" },
+  sent: { label: "Sent", icon: CheckCircle2, style: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+  active: { label: "Active", icon: TrendingUp, style: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  scheduled: { label: "Scheduled", icon: Clock, style: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  draft: { label: "Draft", icon: XCircle, style: "bg-muted text-muted-foreground border-border" },
 };
 
 const Email = () => {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("all");
 
-  const filtered = tab === "all" ? campaigns : campaigns.filter((c) => c.status === tab);
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ["campaigns", "email"],
+    queryFn: () => campaignsApi.getCampaigns("email"),
+  });
 
-  const totalSent = campaigns.reduce((a, c) => a + c.delivered, 0);
-  const totalOpened = campaigns.reduce((a, c) => a + c.opened, 0);
-  const totalClicked = campaigns.reduce((a, c) => a + c.clicked, 0);
+  const filtered = tab === "all" || tab === "sent" ? campaigns : [];
+
+  const totalSent = campaigns.reduce((a, c) => a + (c.delivered || 0), 0);
+  const totalOpened = campaigns.reduce((a, c) => a + (c.opened || 0), 0);
+  const totalClicked = campaigns.reduce((a, c) => a + (c.clicked || 0), 0);
   const avgOpenRate = totalSent > 0 ? ((totalOpened / totalSent) * 100).toFixed(1) : "0";
   const avgClickRate = totalSent > 0 ? ((totalClicked / totalSent) * 100).toFixed(1) : "0";
 
@@ -117,7 +56,7 @@ const Email = () => {
           <h1 className="text-2xl font-display font-bold text-foreground">Email Campaigns</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage and track your email campaigns</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate("/dashboard/email/compose")}>
           <Plus className="w-4 h-4" /> New Campaign
         </Button>
       </div>
@@ -137,8 +76,8 @@ const Email = () => {
             <Eye className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground mt-1">{avgOpenRate}%</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +3.2% vs last month
+          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+            Insufficient data for trend
           </p>
         </Card>
         <Card className="p-4">
@@ -147,8 +86,8 @@ const Email = () => {
             <MousePointerClick className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground mt-1">{avgClickRate}%</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +1.8% vs last month
+          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+            Insufficient data for trend
           </p>
         </Card>
         <Card className="p-4">
@@ -156,9 +95,9 @@ const Email = () => {
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Subscribers</p>
             <Users className="w-4 h-4 text-muted-foreground" />
           </div>
-          <p className="text-2xl font-bold text-foreground mt-1">12,450</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +340 this week
+          <p className="text-2xl font-bold text-foreground mt-1">—</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Tracking setup pending
           </p>
         </Card>
       </div>
@@ -174,8 +113,25 @@ const Email = () => {
         </TabsList>
 
         <TabsContent value={tab} className="mt-4 space-y-3">
-          {filtered.map((c) => {
-            const st = statusConfig[c.status];
+          {isLoading ? (
+            <div className="py-12 flex justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-12 text-center text-muted-foreground border border-dashed rounded-lg">
+              No campaigns found.
+            </div>
+          ) : filtered.map((c) => {
+            const st = statusConfig.sent;
+            const delivered = c.delivered || 0;
+            const recipients = c.sent_count || 0;
+            const opened = c.opened || 0;
+            const clicked = c.clicked || 0;
+            const openRate = delivered > 0 ? ((opened / delivered) * 100).toFixed(1) : "0";
+            const clickRate = delivered > 0 ? ((clicked / delivered) * 100).toFixed(1) : "0";
+            const revenue = c.revenue ? `$${c.revenue.toLocaleString()}` : "$0";
+            const sentAtText = format(new Date(c.created_at || ''), 'MMM d, yyyy');
+
             return (
               <Card key={c.id} className="p-4 sm:p-5 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -185,43 +141,35 @@ const Email = () => {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-foreground text-sm">{c.name}</h3>
+                        <h3 className="font-semibold text-foreground text-sm">{c.subject || "Email Campaign"}</h3>
                         <Badge variant="outline" className={st.style}>{st.label}</Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5 truncate">Subject: {c.subject}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-sm">Subject: {c.subject || "No subject"}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {c.status === "scheduled" ? `Scheduled for ${c.sentAt}` : c.sentAt}
-                        {c.recipients > 0 && ` · ${c.recipients.toLocaleString()} recipients`}
+                        {sentAtText}
+                        {recipients > 0 && ` · ${recipients.toLocaleString()} recipients`}
                       </p>
                     </div>
                   </div>
 
-                  {c.status !== "draft" && c.status !== "scheduled" && (
-                    <div className="flex items-center gap-6 text-sm shrink-0">
-                      <div className="text-center hidden md:block">
-                        <p className="text-xs text-muted-foreground">Delivered</p>
-                        <p className="font-semibold text-foreground">{c.delivered.toLocaleString()}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground">Open Rate</p>
-                        <p className="font-semibold text-foreground">{c.openRate}%</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground">Click Rate</p>
-                        <p className="font-semibold text-foreground">{c.clickRate}%</p>
-                      </div>
-                      <div className="text-center hidden sm:block">
-                        <p className="text-xs text-muted-foreground">Revenue</p>
-                        <p className="font-semibold text-accent">{c.revenue}</p>
-                      </div>
+                  <div className="flex items-center gap-6 text-sm shrink-0">
+                    <div className="text-center hidden md:block">
+                      <p className="text-xs text-muted-foreground">Delivered</p>
+                      <p className="font-semibold text-foreground">{delivered.toLocaleString()}</p>
                     </div>
-                  )}
-
-                  {(c.status === "draft" || c.status === "scheduled") && (
-                    <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
-                      {c.status === "draft" ? "Edit Draft" : "View"} <ArrowUpRight className="w-3 h-3" />
-                    </Button>
-                  )}
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground">Open Rate</p>
+                      <p className="font-semibold text-foreground">{openRate}%</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground">Click Rate</p>
+                      <p className="font-semibold text-foreground">{clickRate}%</p>
+                    </div>
+                    <div className="text-center hidden sm:block">
+                      <p className="text-xs text-muted-foreground">Revenue</p>
+                      <p className="font-semibold text-accent">{revenue}</p>
+                    </div>
+                  </div>
                 </div>
               </Card>
             );

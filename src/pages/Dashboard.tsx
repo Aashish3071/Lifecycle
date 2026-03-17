@@ -1,7 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { metricsApi } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Users,
   ShoppingCart,
@@ -15,87 +19,23 @@ import {
   CalendarClock,
   Activity,
   Eye,
+  Loader2,
 } from "lucide-react";
 
 /* ── MVP Overview Metrics ─────────────────────────────────── */
-const overviewMetrics = [
-  {
-    label: "Total Customers Tracked",
-    value: "12,480",
-    icon: Users,
-    change: "+340 this week",
-  },
-  {
-    label: "Need Attention",
-    value: "2,463",
-    icon: AlertTriangle,
-    change: "Across all segments",
-  },
-  {
-    label: "Active Automations",
-    value: "4",
-    icon: Workflow,
-    change: "1 paused",
-  },
-  {
-    label: "Avg. Engagement Rate",
-    value: "42%",
-    icon: Activity,
-    change: "+3% vs last month",
-  },
-];
+// We'll define these dynamically below based on the API response
 
-/* ── What Needs Attention (drives to Audiences + Recommendations) */
-const attentionItems = [
-  {
-    id: 1,
-    severity: "high" as const,
-    icon: ShoppingCart,
-    title: "324 customers abandoned checkout",
-    description: "High-intent customers who added items to cart but didn't purchase in the last 7 days.",
-    count: 324,
-    action: "View in Audiences",
-    link: "/dashboard/audiences",
-  },
-  {
-    id: 2,
-    severity: "high" as const,
-    icon: UserX,
-    title: "1,247 customers going dormant",
-    description: "No engagement in 60+ days. Their engagement scores are dropping below threshold.",
-    count: 1247,
-    action: "View in Audiences",
-    link: "/dashboard/audiences",
-  },
-  {
-    id: 3,
-    severity: "medium" as const,
-    icon: CalendarClock,
-    title: "892 customers overdue for reorder",
-    description: "Past their average order interval — typically ready for a reminder.",
-    count: 892,
-    action: "See Recommendation",
-    link: "/dashboard/recommendations",
-  },
-  {
-    id: 4,
-    severity: "low" as const,
-    icon: Eye,
-    title: "1,890 browsers didn't add to cart",
-    description: "Viewed products but showed no purchase intent. A nudge could convert 3-5%.",
-    count: 1890,
-    action: "See Recommendation",
-    link: "/dashboard/recommendations",
-  },
-];
+import { recommendationsApi } from "@/lib/api/recommendations.api";
+import { automationsApi } from "@/lib/api/automations.api";
 
-/* ── Quick Flow Status ─────────────────────────────────────── */
-const automationStatus = [
-  { name: "Cart Recovery", status: "active" as const, reached: 324, engagement: "27%" },
-  { name: "Reorder Reminder", status: "active" as const, reached: 892, engagement: "12%" },
-  { name: "Dormant Win-Back", status: "active" as const, reached: 210, engagement: "9%" },
-  { name: "Browse Abandonment", status: "paused" as const, reached: 0, engagement: "—" },
-];
+/* ── Weekly Engagement Trend Data ──────────────────────────── */
+// Chart data will be populated dynamically from API
+
+const chartConfig = {
+  emailOpens: { label: "Email Opens", color: "hsl(220 60% 50%)" },
+  emailClicks: { label: "Email Clicks", color: "hsl(14 90% 58%)" },
+  waReads: { label: "WA Reads", color: "hsl(142 60% 45%)" },
+};
 
 const severityStyles = {
   high: "border-l-destructive bg-destructive/5",
@@ -105,6 +45,71 @@ const severityStyles = {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  // Fetch latest snapshot for cards
+  const { data: latestMetrics, isLoading: isMetricsLoading } = useQuery({
+    queryKey: ["metrics", "latest"],
+    queryFn: metricsApi.getLatestMetrics,
+  });
+
+  // Fetch 7-day trend for chart (using total_customers as a proxy for trend until we seed specific channel events)
+  const { data: trendData, isLoading: isTrendLoading } = useQuery({
+    queryKey: ["metrics", "trend", "total_customers"],
+    queryFn: () => metricsApi.getMetricTrend("total_customers", 7),
+  });
+
+  // Fetch true recommendations to replace 'What Needs Attention'
+  const { data: recommendations = [] } = useQuery({
+    queryKey: ["recommendations"],
+    queryFn: recommendationsApi.getRecommendations,
+  });
+
+  // Fetch true automations to replace 'Active Automations'
+  const { data: automations = [] } = useQuery({
+    queryKey: ["automations"],
+    queryFn: automationsApi.getAutomations,
+  });
+
+  // Map API output to the overview cards formatting
+  const overviewMetrics = [
+    {
+      label: "Total Customers Tracked",
+      value: latestMetrics?.total_customers ? Math.round(latestMetrics.total_customers.metric_value).toLocaleString() : "—",
+      icon: Users,
+      change: "Updated daily",
+    },
+    {
+      label: "Need Attention",
+      value: latestMetrics?.at_risk_customers ? Math.round(latestMetrics.at_risk_customers.metric_value).toLocaleString() : "—",
+      icon: AlertTriangle,
+      change: "Customers at-risk",
+    },
+    {
+      label: "Active Automations",
+      value: latestMetrics?.active_automations ? Math.round(latestMetrics.active_automations.metric_value).toLocaleString() : "—",
+      icon: Workflow,
+      change: "Running flows",
+    },
+    {
+      label: "Avg. Engagement Rate",
+      value: latestMetrics?.avg_engagement_rate ? `${Math.round(latestMetrics.avg_engagement_rate.metric_value)}%` : "—",
+      icon: Activity,
+      change: "Across all channels",
+    },
+  ];
+
+  // Map historical metrics to Recharts format
+  // Reversing so oldest is first, newest on the right
+  const weeklyTrend = trendData ? [...trendData].reverse().map(row => {
+    const d = new Date(row.computed_at || new Date());
+    return {
+      day: d.toLocaleDateString("en-US", { weekday: "short" }),
+      // Currently mocking the breakdown since we don't have historical channel event seed data
+      emailOpens: 0,
+      emailClicks: 0,
+      waReads: 0,
+    };
+  }) : [];
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
@@ -120,25 +125,66 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full w-fit">
           <Clock className="w-3 h-3" />
-          Last analyzed 2h ago
+          Last analyzed {latestMetrics?.total_customers?.computed_at ? new Date(latestMetrics.total_customers.computed_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'never'}
         </div>
       </div>
 
       {/* ── Overview Metrics ──────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {overviewMetrics.map((m) => (
-          <Card key={m.label} className="p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                {m.label}
-              </span>
-              <m.icon className="w-4 h-4 text-muted-foreground opacity-50" />
-            </div>
-            <p className="text-xl sm:text-2xl font-display font-bold text-foreground">{m.value}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{m.change}</p>
-          </Card>
-        ))}
-      </div>
+      {isMetricsLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {overviewMetrics.map((m) => (
+            <Card key={m.label} className="p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                  {m.label}
+                </span>
+                <m.icon className="w-4 h-4 text-muted-foreground opacity-50" />
+              </div>
+              <p className="text-xl sm:text-2xl font-display font-bold text-foreground">{m.value}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{m.change}</p>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* ── Weekly Engagement Trend Chart ──────────────── */}
+      <Card className="p-4 sm:p-5">
+        <h2 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-4">
+          <Activity className="w-4 h-4 text-primary" />
+          Weekly Engagement Trend
+        </h2>
+        {isTrendLoading ? (
+          <div className="flex items-center justify-center py-12 h-[250px]">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig} className="h-[250px] w-full">
+            <AreaChart data={weeklyTrend} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="fillEmailOpens" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(220 60% 50%)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="hsl(220 60% 50%)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="fillWaReads" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(142 60% 45%)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="hsl(142 60% 45%)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="day" tickLine={false} axisLine={false} className="text-xs" />
+              <YAxis tickLine={false} axisLine={false} className="text-xs" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Area type="monotone" dataKey="waReads" stroke="hsl(142 60% 45%)" fill="url(#fillWaReads)" strokeWidth={2} />
+              <Area type="monotone" dataKey="emailOpens" stroke="hsl(220 60% 50%)" fill="url(#fillEmailOpens)" strokeWidth={2} />
+              <Area type="monotone" dataKey="emailClicks" stroke="hsl(14 90% 58%)" fill="transparent" strokeWidth={2} strokeDasharray="5 5" />
+            </AreaChart>
+          </ChartContainer>
+        )}
+      </Card>
 
       {/* ── What Needs Attention ──────────────────────────── */}
       <div>
@@ -157,38 +203,49 @@ const Dashboard = () => {
           </Button>
         </div>
         <div className="space-y-3">
-          {attentionItems.map((item) => (
-            <Card
-              key={item.id}
-              className={`border-l-4 ${severityStyles[item.severity]} p-0 overflow-hidden`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-4 sm:px-5">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="shrink-0 w-10 h-10 rounded-lg bg-card flex items-center justify-center border border-border">
-                    <item.icon className="w-5 h-5 text-foreground" />
+          {recommendations.slice(0, 4).map((item: any) => {
+            let severity: "high"|"medium"|"low" = "low";
+            if (item.priority > 80) severity = "high";
+            else if (item.priority > 50) severity = "medium";
+
+            return (
+              <Card
+                key={item.id}
+                className={`border-l-4 ${severityStyles[severity]} p-0 overflow-hidden`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-4 sm:px-5">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="shrink-0 w-10 h-10 rounded-lg bg-card flex items-center justify-center border border-border">
+                      <Zap className="w-5 h-5 text-foreground" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.explanation}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-right">
+                      <p className="text-[10px] text-muted-foreground">Impact</p>
+                      <p className="text-sm font-semibold text-foreground">{item.expected_impact}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="shrink-0 gap-1.5 text-xs"
+                      onClick={() => navigate("/dashboard/recommendations")}
+                    >
+                      View Details <ArrowRight className="w-3 h-3" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="text-right">
-                    <p className="text-lg font-display font-bold text-foreground">{item.count.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">customers</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="shrink-0 gap-1.5 text-xs"
-                    onClick={() => navigate(item.link)}
-                  >
-                    {item.action} <ArrowRight className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
+          {recommendations.length === 0 && (
+            <div className="text-center py-8 border border-dashed rounded-lg text-muted-foreground">
+              No pending items require your attention.
+            </div>
+          )}
         </div>
       </div>
 
@@ -220,23 +277,32 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {automationStatus.map((f) => (
-                  <tr key={f.name} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                    <td className="px-5 py-3 font-medium text-foreground">{f.name}</td>
-                    <td className="px-5 py-3 text-center">
-                      <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
-                        f.status === "active"
-                          ? "bg-accent/10 text-accent"
-                          : "bg-muted text-muted-foreground"
-                      }`}>
-                        {f.status === "active" ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                        {f.status === "active" ? "Active" : "Paused"}
-                      </span>
+                {automations.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="text-center py-6 text-muted-foreground">
+                      No active automations.
                     </td>
-                    <td className="px-5 py-3 text-right text-muted-foreground">{f.reached}</td>
-                    <td className="px-5 py-3 text-right text-accent font-semibold">{f.engagement}</td>
                   </tr>
-                ))}
+                ) : automations.map((f: any) => {
+                  const isActive = f.status === 'active';
+                  return (
+                    <tr key={f.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
+                      <td className="px-5 py-3 font-medium text-foreground">{f.name}</td>
+                      <td className="px-5 py-3 text-center">
+                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
+                          isActive
+                            ? "bg-accent/10 text-accent"
+                            : "bg-muted text-muted-foreground"
+                        }`}>
+                          {isActive ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                          {isActive ? "Active" : "Draft"}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-right text-muted-foreground">{f.total_runs || 0} runs</td>
+                      <td className="px-5 py-3 text-right text-accent font-semibold">—</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

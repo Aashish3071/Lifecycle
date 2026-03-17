@@ -7,6 +7,7 @@ import {
   ListChecks,
   Mail,
   MessageCircle,
+  Megaphone,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -35,6 +36,10 @@ const coreItems = [
 const channelItems = [
   { title: "Email", url: "/dashboard/email", icon: Mail },
   { title: "WhatsApp", url: "/dashboard/whatsapp", icon: MessageCircle },
+];
+
+const campaignItems = [
+  { title: "Campaigns", url: "/dashboard/campaigns", icon: Megaphone },
 ];
 
 const AppSidebar = () => {
@@ -97,6 +102,7 @@ const AppSidebar = () => {
         )}
 
         {renderGroup("Core", coreItems)}
+        {renderGroup("Campaigns", campaignItems)}
         {renderGroup("Channels", channelItems)}
       </SidebarContent>
 

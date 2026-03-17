@@ -19,7 +19,7 @@ const Navbar = ({ onRequestAccess }: NavbarProps) => {
       navigate("/dashboard");
     } else {
       signIn();
-      navigate("/onboarding");
+      navigate("/setup");
     }
   };
 

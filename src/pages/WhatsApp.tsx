@@ -1,4 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { campaignsApi } from "@/lib/api";
+import { formatDistanceToNow, format } from "date-fns";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,95 +21,30 @@ import {
   XCircle,
   ArrowUpRight,
   Smartphone,
+  Loader2,
 } from "lucide-react";
 
-const campaigns = [
-  {
-    id: 1,
-    name: "Cart Recovery Nudge",
-    status: "active" as const,
-    sentAt: "Ongoing",
-    recipients: 2840,
-    delivered: 2780,
-    read: 2224,
-    replied: 445,
-    readRate: 80.0,
-    replyRate: 16.0,
-    revenue: undefined,
-    message: "Hey! You left items in your cart. Complete your order before they sell out 🛒",
-  },
-  {
-    id: 2,
-    name: "Win-Back Message",
-    status: "sent" as const,
-    sentAt: "Mar 11, 2026",
-    recipients: 1240,
-    delivered: 1215,
-    read: 972,
-    replied: 194,
-    readRate: 80.0,
-    replyRate: 16.0,
-    revenue: undefined,
-    message: "We miss you! Check out what's new since your last visit 💛",
-  },
-  {
-    id: 3,
-    name: "Order Confirmation",
-    status: "active" as const,
-    sentAt: "Ongoing",
-    recipients: 5600,
-    delivered: 5544,
-    read: 4990,
-    replied: 560,
-    readRate: 90.0,
-    replyRate: 10.0,
-    revenue: undefined,
-    message: "Your order #{{order_id}} has been confirmed! Track it here 📦",
-  },
-  {
-    id: 4,
-    name: "Flash Sale Alert",
-    status: "scheduled" as const,
-    sentAt: "Mar 20, 2026",
-    recipients: 6200,
-    delivered: 0,
-    read: 0,
-    replied: 0,
-    readRate: 0,
-    replyRate: 0,
-    revenue: undefined,
-    message: "🔥 Don't miss out! Check out our latest collection, available for a limited time only!",
-  },
-  {
-    id: 5,
-    name: "Replenishment Reminder",
-    status: "draft" as const,
-    sentAt: "—",
-    recipients: 0,
-    delivered: 0,
-    read: 0,
-    replied: 0,
-    readRate: 0,
-    replyRate: 0,
-    revenue: undefined,
-    message: "Time to restock? Your {{product}} might be running low 🔄",
-  },
-];
-
 const statusConfig = {
-  sent: { label: "Sent", style: "bg-emerald-500/10 text-emerald-600" },
-  active: { label: "Active", style: "bg-blue-500/10 text-blue-600" },
-  scheduled: { label: "Scheduled", style: "bg-amber-500/10 text-amber-600" },
-  draft: { label: "Draft", style: "bg-muted text-muted-foreground" },
+  sent: { label: "Sent", style: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+  active: { label: "Active", style: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  scheduled: { label: "Scheduled", style: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  draft: { label: "Draft", style: "bg-muted text-muted-foreground border-border" },
 };
 
 const WhatsApp = () => {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("all");
-  const filtered = tab === "all" ? campaigns : campaigns.filter((c) => c.status === tab);
 
-  const totalDelivered = campaigns.reduce((a, c) => a + c.delivered, 0);
-  const totalRead = campaigns.reduce((a, c) => a + c.read, 0);
-  const totalReplied = campaigns.reduce((a, c) => a + c.replied, 0);
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ["campaigns", "whatsapp"],
+    queryFn: () => campaignsApi.getCampaigns("whatsapp"),
+  });
+
+  const filtered = tab === "all" || tab === "sent" ? campaigns : [];
+
+  const totalDelivered = campaigns.reduce((a, c) => a + (c.delivered || 0), 0);
+  const totalRead = campaigns.reduce((a, c) => a + (c.opened || 0), 0);
+  const totalReplied = campaigns.reduce((a, c) => a + (c.clicked || 0), 0);
   const avgReadRate = totalDelivered > 0 ? ((totalRead / totalDelivered) * 100).toFixed(1) : "0";
   const avgReplyRate = totalDelivered > 0 ? ((totalReplied / totalDelivered) * 100).toFixed(1) : "0";
 
@@ -115,7 +55,7 @@ const WhatsApp = () => {
           <h1 className="text-2xl font-display font-bold text-foreground">WhatsApp Campaigns</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage and track your WhatsApp messages</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate("/dashboard/whatsapp/compose")}>
           <Plus className="w-4 h-4" /> New Message
         </Button>
       </div>
@@ -135,8 +75,8 @@ const WhatsApp = () => {
             <Eye className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground mt-1">{avgReadRate}%</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +5.4% vs last month
+          <p className="text-xs text-muted-foreground mt-1">
+            Insufficient data
           </p>
         </Card>
         <Card className="p-4">
@@ -145,8 +85,8 @@ const WhatsApp = () => {
             <MessageCircle className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground mt-1">{avgReplyRate}%</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +2.1% vs last month
+          <p className="text-xs text-muted-foreground mt-1">
+            Insufficient data
           </p>
         </Card>
         <Card className="p-4">
@@ -154,9 +94,9 @@ const WhatsApp = () => {
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Opt-in Users</p>
             <Users className="w-4 h-4 text-muted-foreground" />
           </div>
-          <p className="text-2xl font-bold text-foreground mt-1">8,240</p>
-          <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +520 this week
+          <p className="text-2xl font-bold text-foreground mt-1">—</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Tracking setup pending
           </p>
         </Card>
       </div>
@@ -171,8 +111,24 @@ const WhatsApp = () => {
         </TabsList>
 
         <TabsContent value={tab} className="mt-4 space-y-3">
-          {filtered.map((c) => {
-            const st = statusConfig[c.status];
+          {isLoading ? (
+            <div className="py-12 flex justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-12 text-center text-muted-foreground border border-dashed rounded-lg">
+              No campaigns found.
+            </div>
+          ) : filtered.map((c) => {
+            const st = statusConfig.sent;
+            const delivered = c.delivered || 0;
+            const recipients = c.sent_count || 0;
+            const read = c.opened || 0;
+            const replied = c.clicked || 0;
+            const readRate = delivered > 0 ? ((read / delivered) * 100).toFixed(1) : "0";
+            const replyRate = delivered > 0 ? ((replied / delivered) * 100).toFixed(1) : "0";
+            const sentAtText = format(new Date(c.created_at || ''), 'MMM d, yyyy');
+
             return (
               <Card key={c.id} className="p-4 sm:p-5 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -182,43 +138,35 @@ const WhatsApp = () => {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-foreground text-sm">{c.name}</h3>
+                        <h3 className="font-semibold text-foreground text-sm">{c.subject || "WhatsApp Blast"}</h3>
                         <Badge variant="outline" className={st.style}>{st.label}</Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-sm">{c.message}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-sm">{c.subject || "Message template"}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {c.status === "scheduled" ? `Scheduled for ${c.sentAt}` : c.sentAt}
-                        {c.recipients > 0 && ` · ${c.recipients.toLocaleString()} recipients`}
+                        {sentAtText}
+                        {recipients > 0 && ` · ${recipients.toLocaleString()} recipients`}
                       </p>
                     </div>
                   </div>
 
-                  {c.status !== "draft" && c.status !== "scheduled" && (
-                    <div className="flex items-center gap-6 text-sm shrink-0">
-                      <div className="text-center hidden md:block">
-                        <p className="text-xs text-muted-foreground">Delivered</p>
-                        <p className="font-semibold text-foreground">{c.delivered.toLocaleString()}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground">Read Rate</p>
-                        <p className="font-semibold text-foreground">{c.readRate}%</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground">Reply Rate</p>
-                        <p className="font-semibold text-foreground">{c.replyRate}%</p>
-                      </div>
-                      <div className="text-center hidden sm:block">
-                        <p className="text-xs text-muted-foreground">Replied</p>
-                        <p className="font-semibold text-accent">{c.replied.toLocaleString()}</p>
-                      </div>
+                  <div className="flex items-center gap-6 text-sm shrink-0">
+                    <div className="text-center hidden md:block">
+                      <p className="text-xs text-muted-foreground">Delivered</p>
+                      <p className="font-semibold text-foreground">{delivered.toLocaleString()}</p>
                     </div>
-                  )}
-
-                  {(c.status === "draft" || c.status === "scheduled") && (
-                    <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
-                      {c.status === "draft" ? "Edit Draft" : "View"} <ArrowUpRight className="w-3 h-3" />
-                    </Button>
-                  )}
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground">Read Rate</p>
+                      <p className="font-semibold text-foreground">{readRate}%</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground">Reply Rate</p>
+                      <p className="font-semibold text-foreground">{replyRate}%</p>
+                    </div>
+                    <div className="text-center hidden sm:block">
+                      <p className="text-xs text-muted-foreground">Replied</p>
+                      <p className="font-semibold text-accent">{replied.toLocaleString()}</p>
+                    </div>
+                  </div>
                 </div>
               </Card>
             );

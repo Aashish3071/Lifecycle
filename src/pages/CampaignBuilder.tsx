@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { automationsApi } from "@/lib/api";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,11 +40,11 @@ const actions = [
 ];
 
 const recommendedFlows = [
-  { trigger: "abandoned-cart", action: "email", name: "Abandoned Cart Recovery", reason: "856 users abandoned carts this week" },
-  { trigger: "product-viewed", action: "email", name: "Browse Abandonment", reason: "1,420 users browsed but didn't buy" },
-  { trigger: "consumption-end", action: "whatsapp", name: "Reorder Reminder", reason: "320 users due for reorder" },
-  { trigger: "abandoned-cart", action: "email", name: "Post-Purchase Cross Sell", reason: "490 recent buyers to cross-sell" },
-  { trigger: "dormant-user", action: "whatsapp", name: "Dormant Customer Win-Back", reason: "1,240 dormant users identified" },
+  { trigger: "abandoned-cart", action: "email", name: "Abandoned Cart Recovery", reason: "Re-engage users who left items in their cart" },
+  { trigger: "product-viewed", action: "email", name: "Browse Abandonment", reason: "Follow up with users who browsed but didn't buy" },
+  { trigger: "consumption-end", action: "whatsapp", name: "Reorder Reminder", reason: "Remind customers when products are due for reorder" },
+  { trigger: "abandoned-cart", action: "email", name: "Post-Purchase Cross Sell", reason: "Suggest complementary products to recent buyers" },
+  { trigger: "dormant-user", action: "whatsapp", name: "Dormant Customer Win-Back", reason: "Re-engage customers with no recent activity" },
 ];
 
 const CampaignBuilder = () => {
@@ -52,6 +55,31 @@ const CampaignBuilder = () => {
   const [mode, setMode] = useState<"choose" | "build">("choose");
 
   const currentStep = !selectedTrigger ? 1 : !selectedAction ? 2 : 3;
+  const queryClient = useQueryClient();
+
+  const saveMutation = useMutation({
+    mutationFn: (status: 'active' | 'draft') => {
+      const triggerDetails = triggers.find(t => t.id === selectedTrigger);
+      const actionDetails = actions.find(a => a.id === selectedAction);
+      
+      return automationsApi.saveAutomation({
+        name: `${triggerDetails?.label} -> ${actionDetails?.label}`,
+        trigger_type: selectedTrigger || 'custom',
+        status,
+        n8n_workflow_id: 'pending_generation' // MVP placeholder
+      });
+    },
+    onSuccess: (data, status) => {
+      toast.success(`Automation ${status === 'active' ? 'published' : 'saved'}!`, { 
+        description: status === 'active' ? "Your flow is now live." : "Saved as draft." 
+      });
+      queryClient.invalidateQueries({ queryKey: ["automations"] });
+      navigate("/dashboard/automations");
+    },
+    onError: () => {
+      toast.error("Failed to save automation");
+    }
+  });
 
   const applyRecommended = (flow: typeof recommendedFlows[0]) => {
     setSelectedTrigger(flow.trigger);
@@ -133,13 +161,25 @@ const CampaignBuilder = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="default" size="sm" className="gap-1.5">
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="gap-1.5" 
+            disabled={!selectedTrigger || !selectedAction || saveMutation.isPending}
+            onClick={() => saveMutation.mutate("active")}
+          >
             <Play className="w-3.5 h-3.5" /> Publish
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-1.5" 
+            disabled={!selectedTrigger || !selectedAction || saveMutation.isPending}
+            onClick={() => saveMutation.mutate("draft")}
+          >
             <Save className="w-3.5 h-3.5" /> Save Draft
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => toast.info("Flow settings coming soon!")}>
             <Settings className="w-4 h-4" />
           </Button>
         </div>
@@ -343,7 +383,7 @@ const CampaignBuilder = () => {
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       The items in your cart are missing you! Use code <strong className="text-foreground">COMEBACK10</strong> for 10% off your order.
                     </p>
-                    <Button size="sm" className="w-full mt-3 text-xs">
+                    <Button size="sm" className="w-full mt-3 text-xs" onClick={() => toast.info("Preview CTA — this is a mockup of what the customer sees")}>
                       Complete Purchase
                     </Button>
                   </div>

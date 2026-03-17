@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { automationsApi } from "@/lib/api";
+import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,75 +19,18 @@ import {
   TrendingUp,
   Clock,
   MoreVertical,
+  Loader2,
 } from "lucide-react";
 
-const automations = [
-  {
-    id: 1,
-    name: "Abandoned Cart Recovery",
-    trigger: "Cart abandoned > 1 hour",
-    channels: ["Email", "WhatsApp"],
-    status: "active" as const,
-    sent: 4280,
-    converted: 856,
-    conversionRate: 20.0,
-    engagementRate: "20%",
-    icon: ShoppingCart,
-    lastTriggered: "2 min ago",
-  },
-  {
-    id: 2,
-    name: "Dormant Customer Win-Back",
-    trigger: "No activity for 30 days",
-    channels: ["Email"],
-    status: "active" as const,
-    sent: 1920,
-    converted: 288,
-    conversionRate: 15.0,
-    engagementRate: "15%",
-    icon: UserX,
-    lastTriggered: "18 min ago",
-  },
-  {
-    id: 3,
-    name: "Welcome Series",
-    trigger: "New user signup",
-    channels: ["Email", "WhatsApp"],
-    status: "active" as const,
-    sent: 3150,
-    converted: 1260,
-    conversionRate: 40.0,
-    engagementRate: "40%",
-    icon: Gift,
-    lastTriggered: "5 min ago",
-  },
-  {
-    id: 4,
-    name: "Post-Purchase Cross Sell",
-    trigger: "Order delivered + 3 days",
-    channels: ["Email"],
-    status: "paused" as const,
-    sent: 980,
-    converted: 147,
-    conversionRate: 15.0,
-    engagementRate: "15%",
-    icon: Heart,
-    lastTriggered: "2 days ago",
-  },
-  {
-    id: 5,
-    name: "Reorder Reminder",
-    trigger: "Based on avg. consumption cycle",
-    channels: ["WhatsApp"],
-    status: "draft" as const,
-    sent: 0,
-    converted: 0,
-    conversionRate: 0,
-    engagementRate: "0%",
-    icon: Clock,
-    lastTriggered: "Never",
-  },
-];
+// We use local icon mapping based on common automation names dynamically
+const getIcon = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('cart')) return ShoppingCart;
+  if (n.includes('welcome')) return Gift;
+  if (n.includes('win-back') || n.includes('dormant')) return UserX;
+  if (n.includes('cross')) return Heart;
+  return Clock;
+};
 
 const statusStyles = {
   active: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
@@ -93,21 +40,33 @@ const statusStyles = {
 
 const Automations = () => {
   const navigate = useNavigate();
-  const [flows, setFlows] = useState(automations);
+  const queryClient = useQueryClient();
 
-  const toggleStatus = (id: number) => {
-    setFlows((prev) =>
-      prev.map((f) =>
-        f.id === id
-          ? { ...f, status: f.status === "active" ? ("paused" as const) : ("active" as const) }
-          : f
-      )
-    );
+  const { data: automations = [], isLoading } = useQuery({
+    queryKey: ["automations"],
+    queryFn: automationsApi.getAutomations,
+  });
+
+  const updateStatus = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: 'active' | 'paused' | 'draft' }) =>
+      automationsApi.updateStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["automations"] });
+    },
+    onError: () => {
+      toast.error("Failed to update status");
+    }
+  });
+
+  const toggleStatus = (id: string, currentStatus: string) => {
+    if (updateStatus.isPending) return;
+    const newStatus = currentStatus === "active" ? "paused" : "active";
+    updateStatus.mutate({ id, status: newStatus as 'active' | 'paused' | 'draft' });
   };
 
-  const totalSent = flows.reduce((a, f) => a + f.sent, 0);
-  const totalConverted = flows.reduce((a, f) => a + f.converted, 0);
-  const activeCount = flows.filter((f) => f.status === "active").length;
+  const totalSent = automations.reduce((a, f) => a + ((f as any).metrics?.sent || 0), 0);
+  const totalConverted = automations.reduce((a, f) => a + ((f as any).metrics?.converted || 0), 0);
+  const activeCount = automations.filter((f) => f.status === "active").length;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -146,74 +105,89 @@ const Automations = () => {
       </div>
 
       {/* Automation list */}
-      <div className="space-y-3">
-        {flows.map((flow) => (
-          <Card
-            key={flow.id}
-            className="p-4 sm:p-5 hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => navigate("/dashboard/automations/create")}
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              {/* Icon + info */}
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <flow.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-foreground text-sm">{flow.name}</h3>
-                    <Badge variant="outline" className={statusStyles[flow.status]}>
-                      {flow.status}
-                    </Badge>
+      {isLoading ? (
+        <div className="py-12 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {automations.map((flow) => {
+            const f = flow as any;
+            const FlowIcon = getIcon(f.name);
+            const sent = f.metrics?.sent || 0;
+            const converted = f.metrics?.converted || 0;
+            const cRate = sent > 0 ? ((converted / sent) * 100).toFixed(1) : "0.0";
+            const engRate = sent > 0 ? (((f.metrics?.engaged || 0) / sent) * 100).toFixed(1) : "0.0";
+            
+            return (
+              <Card
+                key={f.id}
+                className="p-4 sm:p-5 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => navigate("/dashboard/automations/create")}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  {/* Icon + info */}
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <FlowIcon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-foreground text-sm">{f.name}</h3>
+                        <Badge variant="outline" className={statusStyles[f.status as keyof typeof statusStyles]}>
+                          {f.status}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">{f.trigger_condition}</p>
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                        {f.channels?.map((ch: any) => (
+                          <span key={ch} className="inline-flex items-center gap-1 text-xs text-muted-foreground capitalize">
+                            {ch === "email" ? <Mail className="w-3 h-3" /> : <MessageCircle className="w-3 h-3" />}
+                            {ch}
+                          </span>
+                        ))}
+                        <span className="text-xs text-muted-foreground">· Created {formatDistanceToNow(new Date(f.created_at || ''), { addSuffix: true })}</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{flow.trigger}</p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    {flow.channels.map((ch) => (
-                      <span key={ch} className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                        {ch === "Email" ? <Mail className="w-3 h-3" /> : <MessageCircle className="w-3 h-3" />}
-                        {ch}
-                      </span>
-                    ))}
-                    <span className="text-xs text-muted-foreground">· Last: {flow.lastTriggered}</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Metrics */}
-              <div className="flex items-center gap-6 text-sm shrink-0">
-                <div className="text-center hidden md:block">
-                  <p className="text-xs text-muted-foreground">Sent</p>
-                  <p className="font-semibold text-foreground">{flow.sent.toLocaleString()}</p>
+                  {/* Metrics */}
+                  <div className="flex items-center gap-6 text-sm shrink-0">
+                    <div className="text-center hidden md:block">
+                      <p className="text-xs text-muted-foreground">Sent</p>
+                      <p className="font-semibold text-foreground">{sent.toLocaleString()}</p>
+                    </div>
+                    <div className="text-center hidden md:block">
+                      <p className="text-xs text-muted-foreground">Converted</p>
+                      <p className="font-semibold text-foreground">{converted.toLocaleString()}</p>
+                    </div>
+                    <div className="text-center hidden sm:block">
+                      <p className="text-xs text-muted-foreground">Rate</p>
+                      <p className="font-semibold text-foreground flex items-center gap-1 justify-center">
+                        <TrendingUp className="w-3 h-3 text-emerald-500" />
+                        {cRate}%
+                      </p>
+                    </div>
+                    <div className="text-center hidden sm:block">
+                      <p className="text-xs text-muted-foreground">Engagement</p>
+                      <p className="font-semibold text-foreground text-center">{engRate}%</p>
+                    </div>
+                    <Switch
+                      checked={f.status === "active"}
+                      disabled={updateStatus.isPending || f.status === "draft"}
+                      onCheckedChange={(val) => {
+                        toggleStatus(f.id, f.status);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="shrink-0"
+                    />
+                  </div>
                 </div>
-                <div className="text-center hidden md:block">
-                  <p className="text-xs text-muted-foreground">Converted</p>
-                  <p className="font-semibold text-foreground">{flow.converted.toLocaleString()}</p>
-                </div>
-                <div className="text-center hidden sm:block">
-                  <p className="text-xs text-muted-foreground">Rate</p>
-                  <p className="font-semibold text-foreground flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-emerald-500" />
-                    {flow.conversionRate}%
-                  </p>
-                </div>
-                <div className="text-center hidden sm:block">
-                  <p className="text-xs text-muted-foreground">Engagement</p>
-                  <p className="font-semibold text-foreground">{flow.engagementRate}</p>
-                </div>
-                <Switch
-                  checked={flow.status === "active"}
-                  onCheckedChange={(e) => {
-                    e && e; // prevent card click
-                    toggleStatus(flow.id);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="shrink-0"
-                />
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

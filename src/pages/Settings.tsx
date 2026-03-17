@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { integrationsApi } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +25,7 @@ import {
   Trash2,
   Pencil,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 
 /* ── Tab definition ──────────────────────────────────────────── */
@@ -34,16 +38,16 @@ const tabs = [
 
 type TabId = (typeof tabs)[number]["id"];
 
-/* ── Mock data ───────────────────────────────────────────────── */
+/* ── Integration UI config (icons, descriptions only) ──────── */
 const integrations = [
   {
     id: "website",
     name: "Your Website",
     description: "Track customer behavior, purchases, and product views from your store.",
     icon: Globe,
-    connected: true,
-    detail: "demo.lifecycle.io",
-    lastSync: "5 min ago",
+    connected: false,
+    detail: null,
+    lastSync: null,
   },
   {
     id: "ga4",
@@ -59,9 +63,9 @@ const integrations = [
     name: "Email Provider",
     description: "Connect your SMTP or email service to send transactional and marketing emails.",
     icon: Mail,
-    connected: true,
-    detail: "smtp.lifecycle.io",
-    lastSync: "12 min ago",
+    connected: false,
+    detail: null,
+    lastSync: null,
   },
   {
     id: "whatsapp",
@@ -74,21 +78,78 @@ const integrations = [
   },
 ];
 
-const teamMembers = [
-  { id: 1, name: "Sarah Chen", email: "sarah@lifecycle.io", role: "Owner", avatar: "SC" },
-  { id: 2, name: "James Rivera", email: "james@lifecycle.io", role: "Admin", avatar: "JR" },
-  { id: 3, name: "Priya Patel", email: "priya@lifecycle.io", role: "Member", avatar: "PP" },
-];
+const teamMembers: { id: number; name: string; email: string; role: string; avatar: string }[] = [];
 
-const roleBadge = {
-  Owner: "default" as const,
-  Admin: "secondary" as const,
-  Member: "outline" as const,
+const roleBadge: Record<string, "default" | "secondary" | "outline"> = {
+  Owner: "default",
+  Admin: "secondary",
+  Member: "outline",
 };
 
 /* ── Component ───────────────────────────────────────────────── */
 const Settings = () => {
   const [activeTab, setActiveTab] = useState<TabId>("account");
+  const queryClient = useQueryClient();
+
+  // Fetch Integrations
+  const { data: dbIntegrations, isLoading: isIntegrationsLoading } = useQuery({
+    queryKey: ["integrations"],
+    queryFn: async () => {
+      // First ensure the 4 core integrations at least exist in the DB
+      const coreTypes = ["website", "ga4", "email", "whatsapp"];
+      await Promise.all(coreTypes.map(t => integrationsApi.initializeIntegration(t)));
+      // Then fetch all
+      return integrationsApi.getIntegrations();
+    },
+  });
+
+  // Mutate Integrations
+  const updateIntegration = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => 
+      integrationsApi.updateIntegrationStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
+    },
+  });
+
+  // Merge DB state with UI config (icons, descriptions)
+  const mergedIntegrations = integrations.map(uiInt => {
+    const dbInt = (dbIntegrations as any[])?.find((d: any) => d.type === uiInt.id);
+    return {
+      ...uiInt,
+      dbId: dbInt?.id,
+      connected: dbInt?.status === 'connected',
+      status: dbInt?.status || 'disconnected',
+      eventsToday: dbInt?.events_today || 0,
+      lastSync: dbInt?.last_sync_at 
+        ? new Date(dbInt.last_sync_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        : null
+    };
+  });
+
+  const handleConnect = (int: typeof mergedIntegrations[0]) => {
+    if (!int.dbId) return;
+    toast.promise(
+      updateIntegration.mutateAsync({ id: int.dbId, status: "connected" }),
+      {
+        loading: `Connecting ${int.name}...`,
+        success: `${int.name} connected successfully! Data sync starting.`,
+        error: `Failed to connect ${int.name}`
+      }
+    );
+  };
+
+  const handleDisconnect = (int: typeof mergedIntegrations[0]) => {
+    if (!int.dbId) return;
+    toast.promise(
+      updateIntegration.mutateAsync({ id: int.dbId, status: "disconnected" }),
+      {
+        loading: `Disconnecting ${int.name}...`,
+        success: `${int.name} disconnected.`,
+        error: `Failed to disconnect ${int.name}`
+      }
+    );
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -163,7 +224,7 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
-                  <Button size="sm">Save Changes</Button>
+                  <Button size="sm" onClick={() => toast.success("Account settings saved!")}>Save Changes</Button>
                 </div>
               </Card>
             </>
@@ -177,8 +238,13 @@ const Settings = () => {
                   Connect your data sources to start collecting customer signals. The more sources connected, the better your recommendations.
                 </p>
               </div>
-              {integrations.map((int) => (
-                <Card key={int.id} className="p-5">
+              {isIntegrationsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                mergedIntegrations.map((int) => (
+                  <Card key={int.id} className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -200,8 +266,8 @@ const Settings = () => {
                         <p className="text-xs text-muted-foreground mt-0.5">{int.description}</p>
                         {int.connected && (
                           <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-                            <span>{int.detail}</span>
-                            <span>· Last sync: {int.lastSync}</span>
+                            <span>{int.eventsToday} events today</span>
+                            {int.lastSync && <span>· Last sync: {int.lastSync}</span>}
                           </div>
                         )}
                       </div>
@@ -209,22 +275,33 @@ const Settings = () => {
                     <div className="flex items-center gap-2 shrink-0">
                       {int.connected ? (
                         <>
-                          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => toast.info(`Managing ${int.name}`, { description: "Integration configuration details coming soon." })}>
                             <ExternalLink className="w-3 h-3" /> Manage
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            disabled={updateIntegration.isPending}
+                            className="text-destructive hover:text-destructive text-xs" 
+                            onClick={() => handleDisconnect(int)}
+                          >
                             Disconnect
                           </Button>
                         </>
                       ) : (
-                        <Button size="sm" className="gap-1.5 text-xs">
+                        <Button 
+                          size="sm" 
+                          className="gap-1.5 text-xs" 
+                          disabled={updateIntegration.isPending}
+                          onClick={() => handleConnect(int)}
+                        >
                           <Link2 className="w-3 h-3" /> Connect
                         </Button>
                       )}
                     </div>
                   </div>
                 </Card>
-              ))}
+              )))}
             </div>
           )}
 
@@ -238,7 +315,7 @@ const Settings = () => {
                     Manage who has access to your Lifecycle account.
                   </p>
                 </div>
-                <Button size="sm" className="gap-1.5 text-xs">
+                <Button size="sm" className="gap-1.5 text-xs" onClick={() => toast.info("Team invitations coming soon!", { description: "We're building role-based access controls." })}>
                   <Plus className="w-3 h-3" /> Invite
                 </Button>
               </div>
