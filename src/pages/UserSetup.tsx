@@ -132,22 +132,30 @@ const UserSetup = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const { error } = await (supabase as any).from("user_profiles").upsert(
-        {
-          user_id: MOCK_USER_ID,
-          full_name: form.fullName,
-          work_email: form.workEmail,
-          company_name: form.companyName,
-          company_website: form.companyWebsite,
-          team_size: form.teamSize,
-          website_platform: form.websitePlatform,
-          industry: form.industry,
-          monthly_visitors: form.monthlyVisitors,
-        },
-        { onConflict: "user_id" }
-      );
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const isPlaceholder = !supabaseUrl || supabaseUrl.includes("placeholder");
 
-      if (error) throw error;
+      if (!isPlaceholder) {
+        const { error } = await (supabase as any).from("user_profiles").upsert(
+          {
+            user_id: MOCK_USER_ID,
+            full_name: form.fullName,
+            work_email: form.workEmail,
+            company_name: form.companyName,
+            company_website: form.companyWebsite,
+            team_size: form.teamSize,
+            website_platform: form.websitePlatform,
+            industry: form.industry,
+            monthly_visitors: form.monthlyVisitors,
+          },
+          { onConflict: "user_id" }
+        );
+
+        if (error) throw error;
+      } else {
+        // Mock a slight network delay then succeed without doing a failing fetch call.
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      }
 
       completeSetup();
       toast.success("Profile saved! Let's set up your account.");
